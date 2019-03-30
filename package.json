@@ -14,24 +14,25 @@
   "devDependencies": {
     "acacha-forms": "^1.0.0",
     "admin-lte": "^2.4.2",
-    "axios": "^0.8",
+    "axios": "^0.18",
     "babel-eslint": "^7.1.1",
     "bootstrap": "3.3.7",
-    "popper.js": "^1.12",
     "cross-env": "^5.0.1",
     "eslint": "^3.14.1",
+    "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^2.0.7",
     "eslint-loader": "^1.6.1",
     "eslint-plugin-html": "^2.0.0",
-    "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
     "font-awesome": "^4.7.0",
     "icheck": "^1.0.2",
     "ionicons": "^3.0.0",
     "jquery": "^3.2",
-    "laravel-mix": "^2.0",
-    "lodash": "^4.17.4",
-    "vue": "^2.5.7"
+    "laravel-mix": "^4.0.7",
+    "lodash": "^4.17.5",
+    "popper.js": "^1.12",
+    "vue": "^2.5.17",
+    "vue-template-compiler": "^2.6.10"
   }
 }

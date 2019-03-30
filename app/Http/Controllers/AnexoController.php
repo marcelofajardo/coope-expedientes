@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Anexo;
 use App\Expediente;
+use App\Comment;
 use App\ExpedienteUsuarios;
 use Illuminate\Support\Facades\DB;
 use App\ClasificacionAnexo;
@@ -141,7 +142,20 @@ class AnexoController extends Controller
      */
     public function show(Anexo $anexo)
     {
-        return view('anexos.show', compact('anexo'));
+          $comments = Comment::all();
+        return view('anexos.show', [
+             'anexo'    => $anexo,
+             'comment'  => $comments
+       ]);
+    }
+    public function show1($id)
+    {
+          $anexo = Anexo::find($id)->get();
+          $comments = Comment::all();
+        return view('anexos.show', [
+             'anexo'    => $anexo,
+             'comment'  => $comments
+       ]);
     }
 
     /**

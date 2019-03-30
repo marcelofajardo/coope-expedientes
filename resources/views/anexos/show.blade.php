@@ -29,25 +29,24 @@
                         <h4 class="">Username: <strong>{{ $anexo->username }}</strong></h4>
                         <h4 class="">Descripción: <strong>{{ $anexo->descripcion }}</strong></h4>
                         @if ($anexo->fecha_vto)
-                              <h4 class="">Fecha: <strong>{{ $anexo->fecha_vto->format('d-m-Y') }}</strong></h4>
+                              <h4 class="">Fecha Vto: <strong>{{ $anexo->fecha_vto->format('d-m-Y') }}</strong></h4>
                         @else
-                              <h4 class="">Fecha: <strong></strong></h4>
+                              <h4 class="">Fecha Vto: <strong></strong></h4>
                         @endif
                         @if ($anexo->anexo_providencia == 'Anexo')
                               <h4 class="">Archivo: <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" target="_blank"><strong>{{ $anexo->file }}</strong></a></h4>
                               <hr />
                               <p class="text-center"></p>
                         @endif
+                        
+                        <div class="row">
+                              <div class="col-xs-12">
+                                    <div id="app">
+                                          <comment anexo="{{ $anexo->id }}"></comment>
+                                    </div>
+                              </div>
+                        </div>
 
-                        <h3>Comments</h3>
-
-                            @include ('comments.index', ['collection' => $comments['root']])
-
-                            @if (Auth::check())
-                                <h3>Leave a Reply</h3>
-
-                                @include ('comments.form')
-                            @endif
                   </div>
 
     </div>

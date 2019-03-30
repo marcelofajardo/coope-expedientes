@@ -69,7 +69,7 @@ class Anexo extends Model
     }
     public function comments()
     {
-        return $this->hasMany('App\Comment')->whereNull('parent_id');
+        return $this->hasMany('App\Comment');
 
     }
     public function expediente()

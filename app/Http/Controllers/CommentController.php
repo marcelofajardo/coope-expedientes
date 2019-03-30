@@ -5,18 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Anexo;
 use App\Comment;
+use Illuminate\Support\Facades\Auth;
+
 
 class CommentController extends Controller
 {
-    public function store(Request $request, Anexo $anexo)
-    {
-        $comment = new Comment();
-        $comment->content = $request->content;
-        $comment->parent_id = $request->parent_id;
-        $comment->user_id = \auth()->id();
+      public function getComments($anexo)
+      {
+            return Comment::where('anexo_id', $anexo)->get();
+      }
+      public function store(Request $request)
+      {
+            $request['user_id'] = Auth::user()->id;
+            $request['username'] = Auth::user()->name;
 
-        $anexo->comments()->save($comment);
+            $this->validate($request,[
+                  'description'     => 'required',
+                  'anexo_id'        => 'required',
+                  'username'        => 'required'
+            ]);
 
-        return \redirect()->route('anexos.show', $anexo);
-    }
+            Comment::create($request->all());
+            return;
+      }
 }

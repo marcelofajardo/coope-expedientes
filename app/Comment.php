@@ -6,30 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     protected $fillable = [
-        'content', 'parent_id', 'post_id', 'user_id',
+        'description',
+	'anexo_id',
+	'user_id',
+      'username'
     ];
 
-    public function anexo()
+
+    public function getSinceAttribute()
     {
-        return $this->belongsTo('App\Anexo');
+          return $this->created_at->diffForHumans();
     }
 
     public function user()
     {
         return $this->belongsTo('App\User');
+
+    }
+    public function anexo()
+    {
+        return $this->hasMany('App\Anexo', 'anexo_id');
     }
 
-    public function parent()
-    {
-        return $this->belongsTo('App\Comment', 'parent_id');
-    }
-    public function newCollection(array $models = [])
-    {
-        return new CommentCollection($models);
-    }
 
-    public function replies()
-    {
-        return $this->hasMany('App\Comment', 'parent_id');
-    }
 }

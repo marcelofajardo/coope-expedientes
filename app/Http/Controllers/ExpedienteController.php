@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Expediente;
 use App\Anexo;
+use App\Comment;
 use App\ExpedienteUsuarios;
 use App\User;
 use App\Log;
@@ -209,6 +210,27 @@ class ExpedienteController extends Controller
         WHERE expediente_id = $expediente->id
         ORDER BY created_at desc");
 
+
+       $anexos = DB::select("SELECT
+            a.created_at,
+            a.file,
+            a.descripcion,
+            a.username,
+            a.url,
+            a.fecha_vto,
+            a.id,
+            a.anexo_providencia,
+            b.nombre AS clasificacion,
+            COUNT(c.id) AS cant_comentarios
+            FROM anexo a
+            INNER JOIN
+            clasificacion_anexo b ON a.clasificacion_id = b.id
+            LEFT JOIN
+            comments c ON a.id = c.anexo_id
+            WHERE a.expediente_id = $expediente->id
+            GROUP BY a.created_at, a.file, a.descripcion, a.username, a.id, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
+       ");
+            /*
         $anexos = DB::select("SELECT
           a.created_at,
           a.file,
@@ -223,9 +245,11 @@ class ExpedienteController extends Controller
           a.clasificacion_id = c.id
           AND a.expediente_id = $expediente->id
           ORDER BY a.created_at desc");
-
+            */
+          //$comentarios = $anexos->comments();
         return view('expedientes.show', [
           'logs'=>$logs,
+          //'comentarios' => $comentarios,
           'anexos'=>$anexos,
           'expediente'=>$expediente,
         ]);

@@ -5,7 +5,7 @@
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
+| Here is where youklj can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
@@ -15,8 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('mis-comentarios/{anexo}', 'CommentController@getComments');
+      Route::post('guardar-comentario', 'CommentController@store');
+
 Route::group(['middleware' => 'auth'], function () {
-      Route::post('posts/{post}/comment', 'CommentController@store')->name('comments.store');
+
 
       /*
 	Route::group(['prefix' => 'rol'], function () {
@@ -64,6 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('editar/{anexo}', 'AnexoController@update')->name('anexo.update')->middleware('permission:anexo.update');
         Route::get('eliminar/{anexo}', 'AnexoController@destroy')->name('anexo.delete')->middleware('permission:anexo.delete');
         Route::get('eliminarAjax/{id}', 'AnexoController@destroyAjax')->name('anexo.deleteAjax')->middleware('permission:anexo.deleteAjax');
+        Route::get('show1/{id}', 'AnexoController@show1')->name('anexo.show1');
 
     });
 
