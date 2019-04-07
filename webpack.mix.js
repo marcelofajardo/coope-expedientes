@@ -27,6 +27,7 @@ const mix = require('laravel-mix');
        'resources/assets/css/pratt_landing.min.css'
    ], 'public/css/all-landing.css')
    // PACKAGE (ADMINLTE-LARAVEL) RESOURCES
+   .copy('resources/assets/css/expedientes.css','public/css/expedientes.css')
    .copy('resources/assets/img/*.*','public/img/')
    //VENDOR RESOURCES
    .copy('node_modules/font-awesome/fonts/*.*','public/fonts/')

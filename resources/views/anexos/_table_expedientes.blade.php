@@ -1,5 +1,5 @@
 <div class="table-responsive" style="width: 100%;">
-<table class="table table-striped table-hover" id="table-anexos-expedientes">
+<table class="table" id="table-anexos-expedientes">
     <thead>
     <tr>
       <th>Fecha</th>
