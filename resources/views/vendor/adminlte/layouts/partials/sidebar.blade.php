@@ -33,6 +33,18 @@
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Opciones</li>
             <!-- Optionally, you can add icons to the links -->
+
+            <li class="treeview">
+                <a href="#"><i class='fa fa-envelope'></i> <span>Bandeja de Entrada</span> <i class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('expediente.misexpedientes') }}">Mis Expedientes</a></li>
+                    <li><a href="{{ route('expediente.expPermisos') }}">Expedientes con Permiso</a></li>
+                    <li><a href="{{ route('comment.miscomentarios') }}">Comentarios</a></li>
+                    <li><a href="{{ route('notificacion.misnotificaciones') }}">Notificaciones</a></li>
+                </ul>
+            </li>
+
+
             <li class="active"><a href="{{ url('home') }}"><i class='fa fa-link'></i> <span>Inicio</span></a></li>
             <li><a href="{{ route('expediente.index') }}"><i class='fa fa-link'></i> <span>Expedientes</span></a></li>
             <li class="treeview">

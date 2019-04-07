@@ -17,6 +17,13 @@ class NotificacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function misnotificaciones()
+     {
+
+     }
+
+
     public function index()
     {
       //dd(Auth::user()->roles);

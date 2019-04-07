@@ -20,9 +20,9 @@
 
         <tr>
             <td>  {{ Carbon\Carbon::parse($anexo->created_at)->format('d-m-Y H:i') }}  </td>
-            <td> {{ $anexo->anexo_providencia }} </td>
+            <td class="text-center"> {{ $anexo->anexo_providencia }} </td>
             @if ($anexo->anexo_providencia == 'Anexo')
-                <td> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" class="btn btn-primary btn-xs pull-rigth" target="_blank">VER</a> </td>
+                <td style="text-align: center;"> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" class="btn btn-warning btn-sm pull-rigth" target="_blank"><i class="fa fa-eye" title="Ver Anexo"></i></a> </td>
             @else
                 <td></td>
             @endif
@@ -35,7 +35,7 @@
             @else
               <td></td>
             @endif
-            <td> <a href="{{ asset('anexo.show1', $anexo->id) }}" class="btn btn-primary btn-xs pull-rigth">{{ $anexo->cant_comentarios}}</a> </td>
+            <td class="text-center"> <a href="{{ route('anexo.show1', $anexo->id) }}" class="btn btn-warning btn-sm btn-xs"><i class="fa fa-comment-o fa-lg" title="Comentarios"></i>{{ $anexo->cant_comentarios}}</a></td>
 
 
             {{--

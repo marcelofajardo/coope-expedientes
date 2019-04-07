@@ -1,7 +1,7 @@
 @extends('adminlte::layouts.app')
 
 @section('htmlheader_title')
-    Notificaciones
+    Roles
 @endsection
 
 @section('main-content')
@@ -13,9 +13,7 @@
                       Roles
 
                       <p class="pull-right">
-                       <a href="{{ route('roles.index') }}" class="btn btn-sm btn-primary pull-right">
-                         Volver
-                       </a>
+                       <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                      </p>
                 </div>
 

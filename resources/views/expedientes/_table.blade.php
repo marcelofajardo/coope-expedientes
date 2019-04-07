@@ -1,4 +1,4 @@
-<div class="table-responsive" style="width: 100%;">
+<div class="table-responsive" style="width: 100%; padding-left: 15px">
 <table class="table table-striped table-hover" id="table">
     <thead>
     <tr>
@@ -19,7 +19,7 @@
         <tr>
       @endif
 
-            <td> {{ $ex->fecha->format('d/m/Y') }} </td>
+            <td> {{ $ex->fecha }} </td>
             <td> {{ $ex->numero }} </td>
             <td> {{ $ex->caratula }} </td>
             @if ($ex->tipoexpediente)
@@ -28,6 +28,7 @@
             <td></td>
             @endif
             <td>
+
                 @if($action == 'index')
                         @if ($ex->archivado == 1)
                               <a href="{{ route('expediente.show', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Ver</a>

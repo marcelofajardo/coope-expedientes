@@ -1,4 +1,4 @@
-<div class="table-responsive" style="width: 100%;">
+<div class="table-responsive" style="width: 100%; padding: 10px 15px">
 <table class="table table-striped table-hover" id="table">
     <thead>
     <tr>
@@ -19,7 +19,7 @@
             <td> {{ $anexo->created_at->format('d-m-Y') }} </td>
             <td> {{ $anexo->anexo_providencia }} </td>
             <td> {{ $anexo->file }} </td>
-            <td> {{ $anexo->descripcion }} </td>
+            <td> {{ substr($anexo->descripcion, 0, 85) }} </td>
             <td> {{ $anexo->username }} </td>
             @if ($anexo->clasificacion)
               <td> {{ $anexo->clasificacion->nombre }} </td>

@@ -16,7 +16,10 @@ Route::get('/', function () {
 });
 
 Route::get('mis-comentarios/{anexo}', 'CommentController@getComments');
-      Route::post('guardar-comentario', 'CommentController@store');
+Route::get('miscomentarios', 'CommentController@miscomentarios')->name('comment.miscomentarios');
+Route::post('guardar-comentario', 'CommentController@store');
+Route::get('ver/{comment}', 'CommentController@show')->name('comment.show');
+Route::get('delete/{comment}', 'CommentController@delete')->name('comment.delete');
 
 Route::group(['middleware' => 'auth'], function () {
 
@@ -42,7 +45,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('editar/{clasificacionAnexo}', 'ClasificacionAnexoController@edit')->name('clasificacion.edit')->middleware('permission:clasificacion.edit');
         Route::get('ver/{clasificacionAnexo}', 'ClasificacionAnexoController@show')->name('clasificacion.show')->middleware('permission:clasificacion.show');
         Route::patch('editar/{clasificacionAnexo}', 'ClasificacionAnexoController@update')->name('clasificacion.update')->middleware('permission:clasificacion.update');
-        Route::get('eliminar/{clasificacionAnexo}', 'ClasificacionAnexoController@destroy')->name('clasificacion.delete')->middleware('permission:clasificacion.delete');
+        Route::get('eliminar/{clasificacionAnexo}', 'ClasificacionAnexoController@destroy')->name('clasificacion.destroy')->middleware('permission:clasificacion.destroy');
+        Route::get('delete/{clasificacionAnexo}', 'ClasificacionAnexoController@delete')->name('clasificacion.delete')->middleware('permission:clasificacion.delete');
+
+
+        Route::get('restaurar', 'CentroPrestadorController@eliminated')->name('centroPrestador.eliminated');
+        Route::get('restore/{centroPrestador}', 'CentroPrestadorController@restore')->name('centroPrestador.restore');
+
+
+
 
     });
 
@@ -75,6 +86,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'expediente'], function () {
 
+
+
+        Route::get('expPermisos', 'ExpedienteController@expPermisos')->name('expediente.expPermisos');
+        Route::get('misexpedientes', 'ExpedienteController@misexpedientes')->name('expediente.misexpedientes');
         Route::get('listado', 'ExpedienteController@index')->name('expediente.index')->middleware('permission:expediente.index');
         Route::get('agregarAnexo/{expediente}', 'ExpedienteController@agregarAnexo')->name('expediente.agregarAnexo')->middleware('permission:expediente.agregarAnexo');
         Route::get('nueva', 'ExpedienteController@create')->name('expediente.create')->middleware('permission:expediente.create');
@@ -113,6 +128,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'notificacion'], function () {
 
+          Route::get('misnotificaciones', 'NotificacionController@misnotificaciones')->name('notificacion.misnotificaciones');
         Route::get('listado', 'NotificacionController@index')->name('notificacion.index')->middleware('permission:notificacion.index');
         Route::get('nueva', 'NotificacionController@create')->name('notificacion.create')->middleware('permission:notificacion.create');
         Route::post('nueva', 'NotificacionController@store')->name('notificacion.store')->middleware('permission:notificacion.store');

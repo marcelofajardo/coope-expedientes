@@ -27,9 +27,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Nueva Notificación
                   <p class="pull-right">
-                    <a href="{{ route('notificacion.index') }}" class="btn btn-sm btn-primary pull-right">
-                      Volver
-                    </a>
+                    <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                   </p>
                 </div>
 

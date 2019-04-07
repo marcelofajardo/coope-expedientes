@@ -16,6 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
+
+
         $users = User::paginate();
         return view('users.index', compact('users'));
     }
@@ -23,7 +25,11 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        return view('users.show', compact('user'));
+        $roles = $user->roles();
+        
+        return view('users.show', [
+             'user' => $user,
+       ]);
     }
 
     public function edit($id)

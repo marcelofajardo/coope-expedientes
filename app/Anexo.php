@@ -62,24 +62,41 @@ class Anexo extends Model
 
     }
 
-    public function user()
-    {
+      public function user()
+      {
         return $this->belongsTo('App\User');
-
-    }
-    public function comments()
-    {
+      }
+      public function comments()
+      {
         return $this->hasMany('App\Comment');
-
-    }
-    public function expediente()
-    {
+      }
+      public function expediente()
+      {
         return $this->belongsTo('App\Expediente', 'expediente_id');
-    }
+      }
 
-    public function clasificacion()
-    {
+      public function clasificacion()
+      {
         return $this->belongsTo('App\ClasificacionAnexo', 'clasificacion_id');
-    }
+      }
+
+      public static function boot() {
+            parent::boot();
+            static::addGlobalScope('user_id', function ($query) {
+                  //return $query->where('provincia_id', Auth::user()->provincia_id);
+            });
+            static::creating(function ($anexo) {
+                  //return $localidad->provincia_id = Auth::user()->provincia_id;
+            });
+            static::updating(function($anexo) {
+
+            });
+            static::updated(function($anexo) {
+            });
+            static::created(function ($anexo) {
+            });
+      }
+
+      
 
 }

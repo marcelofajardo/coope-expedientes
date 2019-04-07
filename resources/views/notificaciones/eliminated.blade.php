@@ -14,8 +14,7 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('notificacion.index') }}" class="btn btn-default"> Volver</a>
-            <br/>
+            <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
         </div>
     </div>
 

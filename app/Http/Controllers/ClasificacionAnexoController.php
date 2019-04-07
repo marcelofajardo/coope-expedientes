@@ -9,34 +9,18 @@ use Illuminate\Support\Facades\Session;
 
 class ClasificacionAnexoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $clasificacionAnexos = ClasificacionAnexo::all();
 
-        return view('clasificacionAnexos.index', ['clasificacionAnexos' => $clasificacionAnexos, 'action'=>'index']);
-    }
+      public function index()
+      {
+            $clasificacionAnexos = ClasificacionAnexo::all();
+            return view('clasificacionAnexos.index', ['clasificacionAnexos' => $clasificacionAnexos, 'action'=>'index']);
+      }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('clasificacionAnexos.create');
-    }
+      public function create()
+      {
+            return view('clasificacionAnexos.create');
+      }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
       public function store(Request $request)
       {
             $data = $request->all();
@@ -49,36 +33,18 @@ class ClasificacionAnexoController extends Controller
             }
       }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ClasificacionAnexo $clasificacionAnexo)
-    {
-        return view('clasificacionAnexos.show', compact('clasificacionAnexo'));
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ClasificacionAnexo $clasificacionAnexo)
-    {
-        return view('clasificacionAnexos.edit', ['clasificacionAnexo' => $clasificacionAnexo]);
-      //  return view('roles.edit', compact('rol'));
-    }
+      public function show(ClasificacionAnexo $clasificacionAnexo)
+      {
+            return view('clasificacionAnexos.show', compact('clasificacionAnexo'));
+      }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+      public function edit(ClasificacionAnexo $clasificacionAnexo)
+      {
+            return view('clasificacionAnexos.edit', ['clasificacionAnexo' => $clasificacionAnexo]);
+      }
+
       public function update(Request $request, ClasificacionAnexo $clasificacionAnexo)
       {
             if($clasificacionAnexo->fill($request->all())->update())
@@ -89,35 +55,43 @@ class ClasificacionAnexoController extends Controller
             }
       }
 
-    public function eliminated()
-    {
-        $clasificacionAnexosEliminados = ClasificacionAnexo::onlyTrashed()->get();
-        return view('clasificacionanexos.eliminated', ['clasificacionAnexos' => $clasificacionAnexosEliminados, 'action' => 'restore']);
-    }
-
-    public function restore($id)
-    {
-        $clasificacionAnexo = ClasificacionAnexo::withTrashed()->where('slug', '=', $id)->first();
-        $clasificacionAnexo->restore();
-        return redirect()->route('clasificacion.index')->with('success','Clasificación Restaurada satisfactoriamente.');
-    }
-
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ClasificacionAnexo $clasificacionAnexo)
-    {
-        if($clasificacionAnexo->delete())
-        {
-            return redirect()->route('clasificacion.index')->with('success','Clasificación borrada satisfactoriamente.');
-      }else{
-            return redirect()->route('clasificacion.index')->with('error','Ocurrió un error al intentar borrar el Registro');
+      /* Esta acción lo borra pero en realidad como declaramos que trabaje con soft-delete
+      en realidad lo que hace le pone fecha de deleted_at - tengo que asegurarme de que exista esa columna */
+      public function destroy(ClasificacionAnexo $clasificacionAnexo)
+      {
+            if($clasificacionAnexo->delete())
+            {
+                 return redirect()->route('clasificacion.index')->with('success','Clasificación borrada satisfactoriamente.');
+           }else{
+                 return redirect()->route('clasificacion.index')->with('error','Ocurrió un error al intentar borrar el Registro');
+           }
       }
 
-    }
+      public function delete(ClasificacionAnexo $clasificacionAnexo)
+      {
+            if($clasificacionAnexo->forceDelete())
+           {
+                 return redirect()->route('clasificacion.index')->with('success','Clasificación borrada satisfactoriamente.');
+           }else{
+                 return redirect()->route('clasificacion.index')->with('error','Ocurrió un error al intentar borrar el Registro');
+           }
+      }
+
+      /* Esto sirve para ver los que están eliminados.. se pueden restaurar.. tengo que ver el tema de permisos */
+      public function eliminated()
+      {
+            $clasificacionAnexosEliminados = ClasificacionAnexo::onlyTrashed()->get();
+            return view('clasificacionanexos.eliminated', ['clasificacionAnexos' => $clasificacionAnexosEliminados, 'action' => 'restore']);
+      }
+
+      public function restore($slug)
+      {
+          $clasificacionAnexo = ClasificacionAnexo::withTrashed()->where('slug', '=', $id)->first();
+          if($clasificacionAnexo->restore())
+          {
+                return redirect()->route('clasificacion.index')->with('success','Clasificación Restaurada satisfactoriamente.');
+          }else{
+                return redirect()->route('clasificacion.index')->with('error','Ocurrió un error al intentar restaurar la Clasifiación.');
+          }
+      }
 }

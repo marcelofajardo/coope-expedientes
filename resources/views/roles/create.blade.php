@@ -1,7 +1,7 @@
 @extends('adminlte::layouts.app')
 
 @section('htmlheader_title')
-    Notificaciones
+    Roles
 @endsection
 
 @if(Session::has('message'))
@@ -28,9 +28,7 @@
                 <div class="panel-heading">
                       Roles
                       <p class="pull-right">
-                       <a href="{{ route('roles.index') }}" class="btn btn-sm btn-primary pull-right">
-                         Volver
-                       </a>
+                       <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                      </p>
 
                 </div>

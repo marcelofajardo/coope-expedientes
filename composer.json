@@ -19,7 +19,8 @@
         "laravelcollective/html": "^5.4.0",
         "nesbot/carbon": "^1.22",
         "unisharp/laravel-filemanager": "~1.8.4",
-        "uxweb/sweet-alert": "^1.4"
+        "uxweb/sweet-alert": "^1.4",
+        "wilsonglasser/laravel-chatapi-whatsapp": "1.*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -1,12 +1,13 @@
 <?php
 
 namespace App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
     protected $fillable = [
-        'description',
+      'description',
 	'anexo_id',
 	'user_id',
       'username'
@@ -25,7 +26,25 @@ class Comment extends Model
     }
     public function anexo()
     {
-        return $this->hasMany('App\Anexo', 'anexo_id');
+        return $this->belongsTo('App\Anexo');
+    }
+    public static function boot() {
+          parent::boot();
+          static::deleting(function ($comment) {
+              return $comment->user_id = Auth::user()->id;
+          });
+          static::creating(function ($data) {
+              //  $data['user_generate_id'] = Auth::user()->id;
+              //  $data['leida'] = 'NO';
+              //  return $data;
+          });
+          static::updating(function($data)
+          {
+          });
+          static::updated(function($data) {
+          });
+          static::created(function ($data) {
+          });
     }
 
 

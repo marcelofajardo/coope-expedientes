@@ -12,9 +12,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Visualizando Permiso
                   <p class="pull-right">
-                    <a href="{{ route('permisos.index') }}" class="btn btn-sm btn-primary pull-right">
-                      Volver
-                    </a>
+                    <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                   </p>
                 </div>
 

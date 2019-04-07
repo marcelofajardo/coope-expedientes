@@ -1,7 +1,7 @@
 @extends('adminlte::layouts.app')
 
 @section('htmlheader_title')
-    Proyectos
+    Tipos de Expedientes
 @endsection
 
 @if(Session::has('message'))
@@ -27,9 +27,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Nuevo Tipo de Expediente
                   <p class="pull-right">
-                    <a href="{{ route('tipoexpediente.index') }}" class="btn btn-sm btn-primary pull-right">
-                      Volver
-                    </a>
+                    <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                   </p>
                 </div>
 

@@ -62,6 +62,11 @@ class Expediente extends Model
         return $this->belongsTo('App\User');
 
     }
+    public function expUsuarios()
+    {
+        return $this->hasMany('App\ExpedienteUsuarios');
+
+    }
     public function tipoexpediente()
     {
         return $this->belongsTo('App\TipoExpediente', 'tipo_expediente_id');

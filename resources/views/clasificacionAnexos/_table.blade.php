@@ -7,7 +7,7 @@
         <th style="width: 17%">Opciones</th>
     </tr>
     </thead>
-    
+
     <tbody>
     @foreach($clasificacionAnexos as $ca)
         <tr>
@@ -16,14 +16,20 @@
             <td>
                 @if($action == 'index')
                     <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-warning btn-xs">Editar</a>
-                    <a href="{{ route('clasificacion.delete', $ca)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
+                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
     class="btn btn-danger">Eliminar</a>
                 @else
                     <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-danger btn-xs">Restaurar</a>
+                    <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-xs">Borrado Definitivo</a>
                 @endif
             </td>
         </tr>
     @endforeach
     </tbody>
 </table>
+<!--
+¿Qué pasa si quiero borrar algo de forma permanente?
+Para eso tenemos forceDelete
+User::find(1)->forceDelete();
+-->
 </div>

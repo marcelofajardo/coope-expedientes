@@ -27,24 +27,27 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+      protected $hidden = [
+            'password', 'remember_token',
+      ];
 
-    public static function boot() {
-          parent::boot();
-          static::creating(function ($data) {
+      public static function boot() {
+            parent::boot();
+            static::creating(function ($data) {
                $data['activo'] = 'Activo';
                return $data;
-          });
-          static::updating(function($data)
-          {
-          });
-          static::updated(function($data) {
-          });
-          static::created(function ($data) {
-          });
-    }
+            });
+            static::updating(function($data)
+            {
+            });
+            static::updated(function($data) {
+            });
+            static::created(function ($data) {
+            });
+      }
+
+
+      
 
 
 }

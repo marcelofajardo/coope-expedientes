@@ -25,9 +25,7 @@
                   <div class="panel panel-default">
                       <div class="panel-heading">Nuevo Anexo
                         <p class="pull-right">
-                          <a href="{{ route('anexo.index') }}" class="btn btn-sm btn-primary pull-right">
-                            Volver
-                          </a>
+                          <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
                         </p>
                       </div>
 

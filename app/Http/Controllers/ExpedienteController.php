@@ -35,22 +35,47 @@ class ExpedienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function misexpedientes()
+     {
+           $expedientes = Expediente::where('user_id', Auth::user()->id)->get();
+           Session::put('proviene', 'misexpedientes');
+           return view('expedientes.index', [
+             'expedientes' => $expedientes,
+             'action'=>'index'
+           ]);
+
+     }
+     public function expPermisos()
+     {
+           $use = Auth::user()->id;
+           $expedientes = Expediente::with(['tipoexpediente', 'user', 'expUsuarios'])
+                        ->whereHas('expUsuarios', function($q) use ($use){
+                              $q->where('user_id', Auth::user()->id);
+                        })
+                        ->where('user_id', '!=', Auth::user()->id)
+                        ->get();
+
+            return view('expedientes.index', [
+             'expedientes' => $expedientes,
+             'action'=>'index'
+            ]);
+
+     }
+
+
     public function index()
     {
-          //dd(Auth::user()->roles[0]->name);
         $expedientes = Expediente::all();
-        //$rol = Auth::user()->rol->nombre;
+        Session::put('proviene', 'index');
         return view('expedientes.index', [
           'expedientes' => $expedientes,
           'action'=>'index'
         ]);
     }
 
-
-
     public function agregarAnexo(Expediente $expediente)
     {
-
         if (!($this->loadPermiso($expediente))){
           Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
           return redirect()->route('expediente.index');
@@ -363,19 +388,24 @@ class ExpedienteController extends Controller
                   ORDER BY created_at desc");
 
                   $anexos = DB::select("SELECT
-                    a.created_at,
-                    a.file,
-                    a.descripcion,
-                    a.username,
-                    a.url,
-                    a.fecha_vto,
-                    c.nombre AS clasificacion
-                    FROM anexo a, clasificacion_anexo c
-                    WHERE
-                    a.clasificacion_id = c.id
-                    AND a.expediente_id = $expediente->id
-                    ORDER BY a.created_at desc");
-
+                       a.created_at,
+                       a.file,
+                       a.descripcion,
+                       a.username,
+                       a.url,
+                       a.fecha_vto,
+                       a.id,
+                       a.anexo_providencia,
+                       b.nombre AS clasificacion,
+                       COUNT(c.id) AS cant_comentarios
+                       FROM anexo a
+                       INNER JOIN
+                       clasificacion_anexo b ON a.clasificacion_id = b.id
+                       LEFT JOIN
+                       comments c ON a.id = c.anexo_id
+                       WHERE a.expediente_id = $expediente->id
+                       GROUP BY a.created_at, a.file, a.descripcion, a.username, a.id, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
+                  ");
                   /*
                   $logs = DB::table('logs')
                       ->where('expediente_id', '=', $expediente->id)
@@ -407,18 +437,18 @@ class ExpedienteController extends Controller
       if ($expediente->archivado == 0)
       {
             $administradores = DB::Select ("
-                                          SELECT
-                                          u.id AS usuario,
-                                          r.name AS rol
-                                          FROM
-                                          users u, roles r, role_user
-                                          WHERE
-                                          role_user.`role_id` = r.`id`
-                                          AND
-                                          role_user.`user_id` = u.`id`
-                                          AND
-                                          r.name = 'Administrador'
-                                          ");
+                  SELECT
+                  u.id AS usuario,
+                  r.name AS rol
+                  FROM
+                  users u, roles r, role_user
+                  WHERE
+                  role_user.`role_id` = r.`id`
+                  AND
+                  role_user.`user_id` = u.`id`
+                  AND
+                  r.name = 'Administrador'
+                  ");
 
             //$usuarioAdministrador = $administradores[0]->usuario;
             foreach ($administradores as $admin) {

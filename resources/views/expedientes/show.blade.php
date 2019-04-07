@@ -6,7 +6,7 @@
 
 
 @section('main-content')
-<div class="container">
+<div class="container-fluid" style="width: 90%">
       <div class="row">
             <div class="page-title">
                   <div class="title_left">
@@ -15,7 +15,7 @@
                         <br/>
                   </div>
                   <div class="pull-right">
-                        <a href="{{ route('expediente.index') }}" class="btn btn-default"> Volver</a>
+                        <a style="padding-left: 10px; padding-right: 10px; margin-bottom: 15px; color: #ffffff" class="btn btn-default btn-primary" href="{{ URL::previous() }}">Volver</a>
                         <br/>
                   </div>
             </div>
@@ -25,9 +25,9 @@
 
 
 
-            <div class="panel panel-success col-sm-12">
-                  <div class="panel-heading">
-                        <h3 class="panel-title  text-center">Carátula: <strong>{{ $expediente->caratula }}</strong></h3>
+            <div class="panel panel-success col-12" style="padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                  <div class="panel-heading" style="padding-top: 20px; padding-bottom: 20px">
+                        <h2 style="font-size: 22px;" class="panel-title text-center">Carátula: <strong>{{ $expediente->caratula }}</strong></h2>
                   </div>
                   <div class="panel-body">
                         <div class="row">

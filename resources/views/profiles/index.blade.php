@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <div class="panel-heading">
                     Perfil
                     @can('profiles.create')

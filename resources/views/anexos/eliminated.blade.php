@@ -13,7 +13,7 @@
             <br/>
         </div>
         <div class="pull-right">
-            <a href="{{ route('anexo.index') }}" class="btn btn-default"> Volver</a>
+            <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
             <br/>
         </div>
     </div>
