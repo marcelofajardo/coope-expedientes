@@ -14,37 +14,45 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+      public function index()
+      {
+            $users = User::paginate();
+            return view('users.index', [
+                  'users' => $users,
+            ]);
+      }
 
-
-        $users = User::paginate();
-        return view('users.index', compact('users'));
-    }
-
-    public function show($id)
-    {
-        $user = User::find($id);
-        $roles = $user->roles();
-        
-        return view('users.show', [
+      public function show($id)
+      {
+            $user = User::find($id);
+            $roles = $user->roles();
+            return view('users.show', [
              'user' => $user,
-       ]);
-    }
+            ]);
+      }
 
-    public function edit($id)
-    {
-        $user = User::find($id);
-        $roles = Role::get();
-        return view('users.edit', compact('user', 'roles'));
-    }
+      public function activo($id)
+      {
+            
+            $user = User::find($id);
+            ($user->estado == 'Activo')?$user->estado='Inactivo':$user->estado='Activo';
+            $user->save();
+            return back();
+      }
 
-    public function create()
-    {
-        $roles = Role::get();
-        return view('adminlte::auth.register');
-        //return view('users.create', compact('roles'));
-    }
+      public function edit($id)
+      {
+            $user = User::find($id);
+            $roles = Role::get();
+            return view('users.edit', compact('user', 'roles'));
+      }
+
+      public function create()
+      {
+            $roles = Role::get();
+            return view('adminlte::auth.register');
+            //return view('users.create', compact('roles'));
+      }
 
 
     public function update(Request $request, $id)

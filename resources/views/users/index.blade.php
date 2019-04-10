@@ -13,9 +13,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                <div class="panel-heading">
-                    Usuarios
-                </div>
+                <div class="panel-heading" style="font-size: 16px; font-weight: 600;">Usuarios</div>
 
                 <div class="panel-body">
                     <table class="table table-striped table-hover">
@@ -24,6 +22,7 @@
                                 <th width="10px">ID</th>
                                 <th>Nombre</th>
                                 <th>Correo</th>
+                                <th>Rol</th>
                                 <th>Activo?</th>
                                 <th colspan="3">&nbsp;</th>
                             </tr>
@@ -31,18 +30,23 @@
                         <tbody>
                             @foreach($users as $user)
                             <tr>
-                                <td>{{ $user->id }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->estado }}</td>
-                                @can('users.show')
-                                <td width="10px">
-                                    <a href="{{ route('users.show', $user->id) }}"
-                                    class="btn btn-sm btn-default">
-                                        ver
-                                    </a>
-                                </td>
-                                @endcan
+                                    <td>{{ $user->id }}</td>
+                                    <td class="mailbox-messages mailbox-name"><a href="javascript:void(0);"  style="display:block"><i class="fa fa-user"></i>&nbsp;&nbsp;{{ $user->name }}</a></td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                          <h4>
+                                                @foreach($user->getRoles() as $roles)
+                                                      <span class="label label-warning">{{  $roles  }}</span>
+                                                @endforeach
+                                          </h4>
+                                    </td>
+                                    @if ($user->estado == 'Activo')
+                                          <td><h4><a href="{{ route('users.activo', $user)}}" class="btn btn-success btn-xs pull-rigth" onclick="return confirm('Está seguro que desea bloquear este usuario?')" class="btn btn-success">{{ $user->estado }}</a></h4></td>
+                                    @else
+                                          <td><h4><a href="{{ route('users.activo', $user)}}" class="btn btn-warning btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Activar este usuario?')" class="btn btn-warning">{{ $user->estado }}</a></h4></td>
+                                    @endif
+
+
                                 @can('users.edit')
                                 <td width="10px">
                                     <a href="{{ route('users.edit', $user->id) }}"

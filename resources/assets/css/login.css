@@ -1,0 +1,9 @@
+body.login-page{
+      background-image: url('../img/fondo10.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: bottom;
+}
+.login-logo a{
+      color: #ffffff;
+}

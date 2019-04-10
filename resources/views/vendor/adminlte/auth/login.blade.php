@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+
 <body class="hold-transition login-page">
     <div id="app" v-cloak>
         <div class="login-box">

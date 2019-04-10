@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Expediente;
 use App\Anexo;
+use App\Auditoria;
 use App\Comment;
 use App\ExpedienteUsuarios;
 use App\User;
@@ -19,25 +20,16 @@ use Illuminate\Support\Facades\Auth;
 
 class ExpedienteController extends Controller
 {
-
-
-    public function loadPermiso($expediente)
-    {
-          $permiso = DB::table('expediente_usuarios')->where([
-                     ['expediente_id', '=', $expediente->id],
-                     ['user_id', '=', Auth::user()->id],
-                  ])->exists();
-
+      public function loadPermiso($expediente)
+      {
+            $permiso = DB::table('expediente_usuarios')->where([
+                  ['expediente_id', '=', $expediente->id],
+                  ['user_id', '=', Auth::user()->id],
+            ])->exists();
              return $permiso;
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-     public function misexpedientes()
-     {
+      }
+      public function misexpedientes()
+      {
            $expedientes = Expediente::where('user_id', Auth::user()->id)->get();
            Session::put('proviene', 'misexpedientes');
            return view('expedientes.index', [
@@ -45,9 +37,10 @@ class ExpedienteController extends Controller
              'action'=>'index'
            ]);
 
-     }
-     public function expPermisos()
-     {
+      }
+
+      public function expPermisos()
+      {
            $use = Auth::user()->id;
            $expedientes = Expediente::with(['tipoexpediente', 'user', 'expUsuarios'])
                         ->whereHas('expUsuarios', function($q) use ($use){
@@ -61,21 +54,20 @@ class ExpedienteController extends Controller
              'action'=>'index'
             ]);
 
-     }
+      }
 
+      public function index()
+      {
+            $expedientes = Expediente::all();
+            Session::put('proviene', 'index');
+            return view('expedientes.index', [
+                  'expedientes' => $expedientes,
+                  'action'=>'index'
+            ]);
+      }
 
-    public function index()
-    {
-        $expedientes = Expediente::all();
-        Session::put('proviene', 'index');
-        return view('expedientes.index', [
-          'expedientes' => $expedientes,
-          'action'=>'index'
-        ]);
-    }
-
-    public function agregarAnexo(Expediente $expediente)
-    {
+      public function agregarAnexo(Expediente $expediente)
+      {
         if (!($this->loadPermiso($expediente))){
           Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
           return redirect()->route('expediente.index');
@@ -85,23 +77,23 @@ class ExpedienteController extends Controller
           'expediente' => $expediente,
           'clasificacionAnexo' => $clasificacionAnexo,
         ]);
-    }
+      }
 
-    public function create()
-    {
-        $tipoExpedientes = TipoExpediente::all()->pluck('nombre_and_letra','id');
-        //$usuarios = User::all()->pluck('username','id');
-        $usuarios = User::get();
-       // $usersNOadministrador = DB::select('SELECT u.id, u.username, u.nombre FROM users u, roles r WHERE u.rol_id = r.id AND r.nombre != :admin', ['admin' => 'administrador']);
-        // TENGO QUE VER DE NO PASARLE LOS ADMINISTRADORES
-        return view('expedientes.create', [
-          'tipoExpedientes'=> $tipoExpedientes,
-          'usuarios'=>$usuarios,
-        ]);
-    }
+      public function create()
+      {
+            $tipoExpedientes = TipoExpediente::all()->pluck('nombre_and_letra','id');
+            //$usuarios = User::all()->pluck('username','id');
+            $usuarios = User::get();
+            // $usersNOadministrador = DB::select('SELECT u.id, u.username, u.nombre FROM users u, roles r WHERE u.rol_id = r.id AND r.nombre != :admin', ['admin' => 'administrador']);
+            // TENGO QUE VER DE NO PASARLE LOS ADMINISTRADORES
+            return view('expedientes.create', [
+                  'tipoExpedientes'=> $tipoExpedientes,
+                  'usuarios'=>$usuarios,
+            ]);
+      }
 
-    public function store(ExpedienteRequest $expedienteRequest)
-    {
+      public function store(ExpedienteRequest $expedienteRequest)
+      {
       try {
             $errorCreacionLog = 0;
             $data = $expedienteRequest->all();
@@ -185,16 +177,10 @@ class ExpedienteController extends Controller
       } catch (\Exception $e) {
         dd($e->getMessage());
       }
-    }
+      }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Expediente $expediente)
-    {
+      public function show(Expediente $expediente)
+      {
       if (!($this->loadPermiso($expediente))){
         return redirect()->route('expediente.index')->with('warning', 'Ud no tiene permisos para ver ni editar este expediente.');
       }
@@ -278,77 +264,70 @@ class ExpedienteController extends Controller
           'anexos'=>$anexos,
           'expediente'=>$expediente,
         ]);
-    }
+      }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-    public function edit(Expediente $expediente)
-    {
-          if ($expediente->archivado == 0)
-          {
+      public function edit(Expediente $expediente)
+      {
+            if ($expediente->archivado == 0)
+            {
                 $habilitados = DB::select("
-                                    SELECT
-                                    u.id,
-                                    u.name AS usuario,
-                                    u.nombre,
-                                    r.name AS rol
-                                    FROM
-                                    users u,
-                                    roles r,
-                                    role_user
-                                    WHERE
-                                    u.id = role_user.user_id
-                                    AND
-                                    role_user.role_id = r.id
-                                    AND
-                                    r.name != 'Administrador'
-                                    AND EXISTS (
-                                          SELECT
-                                          eu.user_id,
-                                          role_user.user_id,
-                                          eu.expediente_id
-                                          FROM
-                                          expediente_usuarios eu
-                                          WHERE
-                                          role_user.user_id = eu.user_id
-                                          AND
-                                          eu.expediente_id = $expediente->id
-                                          )
-                                    ");
+                        SELECT
+                        u.id,
+                        u.name AS usuario,
+                        u.nombre,
+                        r.name AS rol
+                        FROM
+                        users u,
+                        roles r,
+                        role_user
+                        WHERE
+                        u.id = role_user.user_id
+                        AND
+                        role_user.role_id = r.id
+                        AND
+                        r.name != 'Administrador'
+                        AND EXISTS (
+                              SELECT
+                              eu.user_id,
+                              role_user.user_id,
+                              eu.expediente_id
+                              FROM
+                              expediente_usuarios eu
+                              WHERE
+                              role_user.user_id = eu.user_id
+                              AND
+                              eu.expediente_id = $expediente->id
+                              )
+                        ");
                 $no_habilitados = DB::select("
-                                    SELECT
-                                    u.id,
-                                    u.name AS usuario,
-                                    u.nombre,
-                                    r.name AS rol
-                                    FROM
-                                    users u,
-                                    roles r,
-                                    role_user
-                                    WHERE
-                                    u.id = role_user.user_id
-                                    AND
-                                    role_user.role_id = r.id
-                                    AND
-                                    r.name != 'Administrador'
-                                    AND NOT EXISTS (
-                                          SELECT
-                                          eu.user_id,
-                                          role_user.user_id,
-                                          eu.expediente_id
-                                          FROM
-                                          expediente_usuarios eu
-                                          WHERE
-                                          role_user.user_id = eu.user_id
-                                          AND
-                                          eu.expediente_id = $expediente->id
-                                          )
-                                    ");
+                        SELECT
+                        u.id,
+                        u.name AS usuario,
+                        u.nombre,
+                        r.name AS rol
+                        FROM
+                        users u,
+                        roles r,
+                        role_user
+                        WHERE
+                        u.id = role_user.user_id
+                        AND
+                        role_user.role_id = r.id
+                        AND
+                        r.name != 'Administrador'
+                        AND NOT EXISTS (
+                              SELECT
+                              eu.user_id,
+                              role_user.user_id,
+                              eu.expediente_id
+                              FROM
+                              expediente_usuarios eu
+                              WHERE
+                              role_user.user_id = eu.user_id
+                              AND
+                              eu.expediente_id = $expediente->id
+                              )
+                        ");
 
                 $logs = DB::select("SELECT
                 created_at,
@@ -425,11 +404,11 @@ class ExpedienteController extends Controller
                     ]);
                   //  return view('roles.edit', compact('rol'));
 
-          }
-    }
+            }
+      }
 
-    public function update(ExpedienteRequest $expedienteRequest, Expediente $expediente)
-    {
+      public function update(ExpedienteRequest $expedienteRequest, Expediente $expediente)
+      {
       if (!($this->loadPermiso($expediente))){
         return redirect()->route('expediente.index')->with('warning', 'Ud no tiene permisos para ver ni editar este expediente.');
       }
@@ -458,15 +437,14 @@ class ExpedienteController extends Controller
             $expediente->fill($data)->update();
 
             $permisosBorrados = DB::table('expediente_usuarios')->where([
-                      ['expediente_id', '=', $expediente->id],
-                ])->get();
+                              ['expediente_id', '=', $expediente->id],
+                      ])->get();
 
             foreach ($permisosBorrados as $borrar) {
-               if (!(in_array($borrar->user_id, $idAdmin)))
-               {
+                  if (!(in_array($borrar->user_id, $idAdmin)))
+                  {
                       DB::delete('delete from expediente_usuarios where user_id = ?',[$borrar->user_id]);
-
-               }
+                  }
 
             }
             if ($permisosBorrados){
@@ -483,35 +461,29 @@ class ExpedienteController extends Controller
           }
           return redirect()->route('expediente.index')->with('success', 'Expediente actualizado satisfactoriamente');
       }
-    }
-
-
-
-    public function eliminated()
-    {
-      if (!($this->loadPermiso($expediente))){
-        Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
-        return redirect()->route('expediente.index');
       }
-        $expedientesArchivados = Expediente::where('archivado', '1')->get();
-        return view('expedientes.eliminated', ['expedientes' => $expedientesArchivados, 'action' => 'restore']);
-    }
 
-    public function restore($id)
-    {
-        $expediente = Expediente::withTrashed()->where('slug', '=', $id)->first();
-        $expediente->restore();
-        return redirect()->route('expediente.index')->with('success', 'Expediente restaurado satisfactoriamente.');
-    }
+      public function eliminated()
+      {
+      if (!($this->loadPermiso($expediente))){
+            Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
+            return redirect()->route('expediente.index');
+      }
+            $expedientesArchivados = Expediente::where('archivado', '1')->get();
+            return view('expedientes.eliminated', ['expedientes' => $expedientesArchivados, 'action' => 'restore']);
+      }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+      public function restore($id)
+      {
+            $expediente = Expediente::withTrashed()->where('slug', '=', $id)->first();
+            $expediente->restore();
+            return redirect()->route('expediente.index')->with('success', 'Expediente restaurado satisfactoriamente.');
+      }
+
       public function destroy(Expediente $expediente)
       {
+
+            // Cuando ACtivo  o Archivo Expediente tengo que comunicarlo por mail a todos los que tenian acceso
             if (!($this->loadPermiso($expediente))){
                   return redirect()->route('expediente.index')->with('warning', 'Ud no tiene permisos para ver ni editar este expediente.');
             }
@@ -521,6 +493,13 @@ class ExpedienteController extends Controller
                 $ok = $expediente->save();
                   if ($ok)
                   {
+                        $au = new Auditoria();
+                        $au->user_id = Auth::user()->id;
+                        $au->username = Auth::user()->name;
+                        $au->accion = 'Expediente Activado';
+                        $au->descripcion = 'El usuario acaba de Archivar el Expediente';
+                        $au->save();
+
                         $control = new Log();
                         $control->user_id = Auth::user()->id;
                         $control->username = Auth::user()->name;
@@ -540,6 +519,13 @@ class ExpedienteController extends Controller
 
                   if ($ok)
                   {
+                        $au = new Auditoria();
+                        $au->user_id = Auth::user()->id;
+                        $au->username = Auth::user()->name;
+                        $au->accion = 'Expediente Activado';
+                        $au->descripcion = 'El usuario acaba de Activar el Expediente';
+                        $au->save();
+
                         $control = new Log();
                         $control->user_id = Auth::user()->id;
                         $control->username = Auth::user()->name;
@@ -547,7 +533,7 @@ class ExpedienteController extends Controller
                         $control->campo = 'Archivado';
                         if($control->save())
                         {
-                              return redirect()->route('expediente.index')->with('success', 'Expediente Archivado satisfactoriamente.');
+                              return redirect()->route('expediente.index')->with('success', 'Expediente Activado satisfactoriamente.');
                         }
 
                   }else{
@@ -556,9 +542,8 @@ class ExpedienteController extends Controller
             }
       }
 
-
-    private function enviar($expediente, $administradores)
-    {
+      private function enviar($expediente, $administradores)
+      {
       foreach ($administradores as $admin) {
             $email = $admin->email;
 
@@ -567,6 +552,6 @@ class ExpedienteController extends Controller
                 $message->to($email)->subject('Sistema Expedientes - Permiso');
             });
       }
-    }
+      }
 
 }

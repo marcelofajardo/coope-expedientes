@@ -27,6 +27,7 @@
                                 <th>Nombre</th>
                                 <th>Slug</th>
                                 <th>Descripción</th>
+
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -36,6 +37,7 @@
                                 <td>{{ $permiso->name }}</td>
                                 <td>{{ $permiso->slug }}</td>
                                 <td>{{ $permiso->description }}</td>
+                               
                                 @can('permisos.show')
                                 <td width="10px">
 

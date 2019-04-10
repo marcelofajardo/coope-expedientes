@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Log extends Model
+class Auditoria extends Model
 {
     use SoftDeletes;
 
@@ -50,10 +50,10 @@ class Log extends Model
      *
      * @param $val
      */
-    public function setCampoAttribute($val)
+    public function setDescripcionAttribute($val)
     {
     //	setlocale(LC_TIME, 'es_ES.UTF-8');
-        $this->attributes['campo'] = trim($val);
+        $this->attributes['descripcion'] = trim($val);
         $this->attributes['slug'] = str_slug($val) . '-'. rand(5,100);
 
     }

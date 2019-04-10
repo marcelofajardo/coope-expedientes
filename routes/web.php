@@ -172,6 +172,7 @@ Route::group(['middleware' => 'auth'], function () {
 	//Users
 	Route::get('users', 'UserController@index')->name('users.index')->middleware('permission:users.index');
       Route::post('users/store', 'UserController@store')->name('users.store')->middleware('permission:users.create');
+      Route::get('users/{user}/activo', 'UserController@activo')->name('users.activo')->middleware('permission:users.activo');
       Route::get('users/create', 'UserController@create')->name('users.create')->middleware('permission:users.create');
 	Route::put('users/{user}', 'UserController@update')->name('users.update')->middleware('permission:users.update');
 	Route::get('users/{user}', 'UserController@show')->name('users.show')->middleware('permission:users.show');
