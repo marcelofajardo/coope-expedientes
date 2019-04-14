@@ -13,7 +13,12 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                <div class="panel-heading" style="font-size: 16px; font-weight: 600;">Usuarios</div>
+                <div class="panel-heading" style="font-size: 16px; font-weight: 600;">Usuarios
+                      <a href="{{ route('users.create') }}"
+                     class="btn btn-sm btn-primary pull-right">
+                         Nuevo Usuario
+                     </a>
+                </div>
 
                 <div class="panel-body">
                     <table class="table table-striped table-hover">

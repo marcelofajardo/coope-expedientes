@@ -10,15 +10,12 @@
                   <div class="card-header">{{ __('Register') }}</div>
 
                   <div class="card-body">
-                      <form method="POST" action="{{ route('register') }}">
+                      <form method="POST" action="{{ route('users.store') }}">
                           @csrf
-
                           <div class="form-group row">
                               <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
                               <div class="col-md-6">
                                   <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
-
                                   @if ($errors->has('name'))
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $errors->first('name') }}</strong>

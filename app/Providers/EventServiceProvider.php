@@ -8,10 +8,11 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Expediente;
 use App\Anexo;
+use App\User;
 
 use App\Observers\ExpedienteObserver;
 use App\Observers\AnexoObserver;
-
+use App\Observers\UserObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
+        User::observe(new UserObserver());
         Expediente::observe(new ExpedienteObserver());
         Anexo::observe(new AnexoObserver());
     }

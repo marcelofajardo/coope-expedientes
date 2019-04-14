@@ -27,7 +27,7 @@ class ExpedienteController extends Controller
                   ['user_id', '=', Auth::user()->id],
             ])->exists();
             $user = User::find(Auth::user()->id);
-            $admin = ($user->getRoles()[0])?true:false;
+            $admin = ($user->getRoles()[0] == 'admin')?true:false;
             return $permiso OR $admin;
       }
       public function misexpedientes()
