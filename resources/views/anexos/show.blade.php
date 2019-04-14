@@ -26,7 +26,8 @@
                         @endif
                         <h4 style="padding-bottom: 10px" class="">Username: <strong>{{ $anexo->username }}</strong></h4>
                         @if ($anexo->fecha_vto)
-                              <h4 style="padding-bottom: 10px" class="">Fecha Vto: <strong>{{ $anexo->fecha_vto->format('d-m-Y') }}</strong></h4>                        @else
+                              <h4 style="padding-bottom: 10px" class="">Fecha Vto: <strong>{{ $anexo->fecha_vto }}</strong></h4>
+                        @else
                               <h4 style="padding-bottom: 10px" class="">Fecha Vto: <strong></strong></h4>
                         @endif
                         @if ($anexo->anexo_providencia == 'Anexo')

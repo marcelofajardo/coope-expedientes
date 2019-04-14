@@ -1,9 +1,13 @@
 <div class="col-md-4 text-center">
 
-	@if($profile->avatar)
-		<img src="{{ asset($profile->avatar) }}" width="100" class="img-user-edit circular" alt="Imagen de Perfil"/>
+	@if (Auth::user()->profile)
+		@if (Auth::user()->profile->avatar)
+			<img src="{{ asset(Auth::user()->profile->avatar)  }}" style="height:150px;width:150px;border-radius:75px; border: 5px solid #cccccc" class="img-circle" alt="User Image" />
+		@else
+			<img src="{{ asset('img/profile/avatar.png') }}" style="height:150px;width:150px;border-radius:75px; border: 5px solid #cccccc" class="img-circle" alt="User Image" />
+		@endif
 	@else
-	<img src="{{ Gravatar::get($user->email) }}" class="img-circle" alt="User Image"/>
+	     <img src="{{ asset('img/profile/avatar.png') }}" style="height:150px;width:150px;border-radius:75px; border: 5px solid #cccccc" class="img-circle" alt="User Image" />
 	@endif
 	<hr />
       <input type="file" class="form-control" name="files[]" multiple />
@@ -43,6 +47,16 @@
 		  </div>
 
 		</div>
+		<div class="form-group">
+			{{ Form::label('email', 'E-mail') }}
+			<div class="input-group">
+			    <div class="input-group-addon">
+			      <span class="glyphicon glyphicon-envelope"></span>
+			    </div>
+			    {{ Form::text('email', Auth::user()->email, ['class' => 'form-control', 'id'=>'email']) }}
+		  </div>
+		</div>
+
 		<div class="form-group">
 			{{ Form::submit('Guardar', ['class' => 'btn btn-sm btn-primary pull-right']) }}
 		</div>

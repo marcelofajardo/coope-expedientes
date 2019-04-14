@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="form-group col-md-2 col-sm-12">
-        {!! Form::label('fecha', 'Fecha') !!}
-        {!! Form::text('fecha', null, ['class' => 'form-control', 'required']) !!}
-    </div>
+      <div class="form-group col-md-2 col-sm-12">
+          {!! Form::label('fecha', 'Fecha') !!}
+          {!! Form::text('fecha', null, ['class' => 'form-control fechas', 'required']) !!}
+      </div>
     <div class="form-group col-md-4 col-sm-12">
        {!! Form::label('nombre', 'Nombre del Expediente') !!}
         {!! Form::text('nombre', null, ['class' => 'form-control']) !!}

@@ -35,7 +35,7 @@ class ExpedienteRequest extends FormRequest
                     'caratula'               => 'required',
                     'usuario'                => 'nullable',
                     'numero'                 => 'nullable',
-                    'nombre'                 => 'nullable',
+                    'nombre'                 => 'required',
                     'nombre_usuario'         => 'nullable',
                     'rol_usuario'            => 'nullable',
                     'fecha'                  => 'required',
@@ -54,7 +54,7 @@ class ExpedienteRequest extends FormRequest
                   'nombre_usuario'         => 'nullable',
                   'rol_usuario'            => 'nullable',
                   'numero'                 => 'nullable',
-                  'nombre'                 => 'nullable',
+                  'nombre'                 => 'required',
                   'fecha'                  => 'required',
                   'archivado'              => 'nullable',
                   'slug'                   => 'nullable|unique:expediente,slug,' . $expediente->id,
@@ -72,6 +72,7 @@ class ExpedienteRequest extends FormRequest
             'tipo_expediente_id.required' => 'Deberá seleccionar un Tipo de Expediente',
             'fecha.required' => 'Deberá completar la Fecha del Expediente',
             'caratula.required' => 'Deberá completar la Carátula del Expediente',
+            'nombre.required' => 'Deberá completar el Nombre del Expediente',
 
         ];
     }

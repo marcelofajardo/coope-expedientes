@@ -8,7 +8,15 @@
         @if (! Auth::guest())
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="{{ Gravatar::get($user->email) }}" class="img-circle" alt="User Image" />
+                        @if (Auth::user()->profile)
+                              @if (Auth::user()->profile->avatar)
+                                    <img src="{{ asset(Auth::user()->profile->avatar)  }}" style="height:40px;width:40px;border-radius:10px; border: 1px solid #cccccc"  class="img-circle" alt="User Image" />
+                              @else
+                                    <img src="{{ asset('img/profile/avatar.png')  }}" style="height:40px;width:40px;border-radius:20px; border: 1px solid #cccccc" class="img-circle" alt="User Image" />
+                              @endif
+                        @else
+                              <img src="{{ asset('img/profile/avatar.png')  }}" style="height:40px;width:40px;border-radius:20px; border: 1px solid #cccccc" class="img-circle" alt="User Image" />
+                        @endif
                 </div>
                 <div class="pull-left info">
                     <p style="overflow: hidden;text-overflow: ellipsis;max-width: 160px;" data-toggle="tooltip" title="{{ Auth::user()->name }}">{{ Auth::user()->name }}</p>
@@ -57,10 +65,11 @@
                 </ul>
             </li>
             @role('admin')
-            <li><a href="{{ route('users.index') }}"><i class='fa fa-link'></i> <span>Usuarios</span></a></li>
-            <li><a href="{{ route('permisos.index') }}"><i class='fa fa-link'></i> <span>Permisos</span></a></li>
-            <li><a href="{{ route('roles.index') }}"><i class='fa fa-link'></i> <span>Roles</span></a></li>
-            <!--<li><a href="{{ route('users.create') }}"><i class='fa fa-link'></i><span>Nuevo Usuario</span></a></li>-->
+                  <li><a href="{{ route('users.index') }}"><i class='fa fa-link'></i> <span>Usuarios</span></a></li>
+                  <li><a href="{{ route('permisos.index') }}"><i class='fa fa-link'></i> <span>Permisos</span></a></li>
+                  <li><a href="{{ route('roles.index') }}"><i class='fa fa-link'></i> <span>Roles</span></a></li>
+                  <li><a href="{{ route('profile.index') }}"><i class='fa fa-link'></i> <span>Perfiles</span></a></li>
+                  <!--<li><a href="{{ route('users.create') }}"><i class='fa fa-link'></i><span>Nuevo Usuario</span></a></li>-->
             @endrole
         </ul><!-- /.sidebar-menu -->
     </section>

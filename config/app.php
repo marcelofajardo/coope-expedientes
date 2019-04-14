@@ -163,7 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Acacha\AdminLTETemplateLaravel\Providers\AdminLTETemplateServiceProvider::class,
         Caffeinated\Shinobi\ShinobiServiceProvider::class,
-
+        Askedio\SoftCascade\Providers\GenericServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -177,6 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
 
     ],
 

@@ -6,24 +6,21 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 class Anexo extends Model
 {
+
+      use SoftDeletes;
+      use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 	/**
      * Setea la Tabla a la que pertenece el modelo
      *
      * @var string
      */
     protected $table = 'anexo';
-
-    protected $dates = ['fecha_vto'];
-
-    /**
-     * Asignación masiva de atributos para la insecion
-     *
-     * @var array
-     */
+    protected $dates = ['deleted_at'];
+    protected $softCascade = ['comments']; //indica la relación posts()
 
     protected $fillable = [
       'expediente_id',
@@ -38,29 +35,19 @@ class Anexo extends Model
       'anexo_providencia',
     ];
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 
-    /**
-     * Normaliza y setea el nombre y el slug del Articulo
-     *
-     * @param $val
-     */
+      public function getRouteKeyName()
+      {
+            return 'slug';
+      }
 
-    public function setFileAttribute($val)
-    {
-    //	setlocale(LC_TIME, 'es_ES.UTF-8');
-        $this->attributes['file'] = trim($val);
-        $this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
+      public function setFileAttribute($val)
+      {
+            //	setlocale(LC_TIME, 'es_ES.UTF-8');
+            $this->attributes['file'] = trim($val);
+            $this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
 
-    }
+      }
 
       public function user()
       {
@@ -97,6 +84,6 @@ class Anexo extends Model
             });
       }
 
-      
+
 
 }

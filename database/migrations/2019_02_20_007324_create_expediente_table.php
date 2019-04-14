@@ -20,10 +20,10 @@ class CreateExpedienteTable extends Migration
             $table->integer('usuario');
             $table->integer('nombre_usuario');
             $table->integer('rol_usuario');
-            $table->integer('archivado');
             $table->integer('tipo_expediente_id')->unsigned();
             $table->date('fecha');
             $table->string('slug')->unique();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('Users');

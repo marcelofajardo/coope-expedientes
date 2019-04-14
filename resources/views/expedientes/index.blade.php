@@ -19,10 +19,12 @@
                         <div class="col-md-5 pull-left"><h4>Expedientes a la fecha</h4></div>
                         <div class="col-md-5 pull-right">
 
-                            <a href="{{ route('expediente.create') }}" class="btn btn-sm btn-primary pull-right">
-                            Nuevo
-                            </a>
-
+                              @if($action == 'index')
+                                    <a href="{{ route('expediente.eliminated')}}" class="btn btn-warning btn-md pull-rigth">Ver Archivados</a>
+                                    <a href="{{ route('expediente.create') }}"    class="btn btn-md btn-primary pull-right">Nuevo</a>
+                              @else
+                                    <a href="{{ route('expediente.index')}}" class="btn btn-warning btn-md pull-rigth">Ver Activos</a>
+                              @endif
                         </div>
                     </div>
                 </div>

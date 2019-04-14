@@ -19,6 +19,7 @@ class CreateCommentTable extends Migration
              $table->integer('parent_id')->unsigned()->nullable();
              $table->integer('anexo_id')->unsigned();
              $table->integer('user_id')->unsigned();
+             $table->softDeletes();
              $table->timestamps();
 
              $table->foreign('parent_id')->references('id')->on('comment');

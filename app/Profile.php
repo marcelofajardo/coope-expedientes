@@ -39,16 +39,15 @@ class Profile extends Model
      *
      * @param $val
      */
-    public function setApellidoAttribute($val)
-    {
-    //	setlocale(LC_TIME, 'es_ES.UTF-8');
-        $this->attributes['apellido'] = trim($val);
-        $this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
-    }
-    public function user()
-    {
-        return $this->belongsTo('App\User');
-
-    }
+      public function setApellidoAttribute($val)
+      {
+            //	setlocale(LC_TIME, 'es_ES.UTF-8');
+            $this->attributes['apellido'] = trim($val);
+            $this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
+      }
+      public function user()
+      {
+            return $this->belongsTo('App\User');
+      }
 
 }

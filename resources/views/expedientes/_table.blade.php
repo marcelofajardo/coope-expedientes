@@ -21,7 +21,7 @@
 
             <td> {{ $ex->fecha }} </td>
             <td> {{ $ex->numero }} </td>
-            <td> {{ $ex->caratula }} </td>
+            <td> <a style="font-weight: 600;" href="{{ route('expediente.show', $ex) }}">{{ $ex->caratula }}</a> </td>
             @if ($ex->tipoexpediente)
             <td> {{ $ex->tipoexpediente->nombre }} </td>
             @else
@@ -29,17 +29,13 @@
             @endif
             <td>
 
-                @if($action == 'index')
-                        @if ($ex->archivado == 1)
-                              <a href="{{ route('expediente.show', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Ver</a>
-                              <a href="{{ route('expediente.delete', $ex)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Activar este ítem?')" class="btn btn-danger">Activar</a>
-                        @else
-                              <a href="{{ route('expediente.show', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Ver</a>
-                              <a href="{{ route('expediente.edit', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Editar</a>
-                              <a href="{{ route('expediente.agregarAnexo', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Agregar</a>
-                              <a href="{{ route('expediente.delete', $ex)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Archivar este ítem?')" class="btn btn-danger">Archivar</a>
-                        @endif
-                @endif
+                  @if($action == 'index')
+                        <a href="{{ route('expediente.edit', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Editar</a>
+                        <a href="{{ route('expediente.agregarAnexo', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Agregar</a>
+                        <a href="{{ route('expediente.delete', $ex)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Archivar este Expediente?')" class="btn btn-danger">Archivar</a>
+                  @else
+                        <a href="{{ route('expediente.restore', $ex->id)}}" class="btn btn-danger btn-xs pull-rigth" class="btn btn-danger">Activar</a>
+                  @endif
             </td>
         </tr>
     @endforeach

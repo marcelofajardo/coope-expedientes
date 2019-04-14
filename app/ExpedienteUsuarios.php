@@ -4,11 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 class ExpedienteUsuarios extends Model
 {
     use SoftDeletes;
+    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 	/**
      * Setea la Tabla a la que pertenece el modelo

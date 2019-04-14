@@ -35,21 +35,15 @@
                                 <td>{{ $profile->user->name }}</td>
                                 <td>{{ $profile->apellido }} {{ $profile->nombre }}</td>
                                 <td>{{ $profile->telefono }}</td>
-                                @can('profiles.show')
-                                <td width="10px">
-                                  <a href="{{ route('profile.show', $profile) }}"
-                                  class="btn btn-sm btn-default">
-                                      Ver
-                                  </a>
-                                </td>
-                                @endcan
+
+                              <td width="10px">
+                                    <a href="{{ route('profile.show', $profile) }}" class="btn btn-sm btn-default"> Ver </a>
+                              </td>
+
                                 @can('profiles.edit')
-                                <td width="10px">
-                                    <a href="{{ route('profile.edit', $profile) }}"
-                                    class="btn btn-sm btn-default">
-                                        editar
-                                    </a>
-                                </td>
+                                    <td width="10px">
+                                          <a href="{{ route('profile.edit', $profile) }}" class="btn btn-sm btn-default"> editar </a>
+                                    </td>
                                 @endcan
                                 @can('profiles.destroy')
                                 <td width="10px">

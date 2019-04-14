@@ -31,6 +31,8 @@ class Auditoria extends Model
       'user_id',
       'username',
       'accion',
+      'modelo',
+      'componente_id',
       'descripcion',
       'slug'
     ];
@@ -54,7 +56,7 @@ class Auditoria extends Model
     {
     //	setlocale(LC_TIME, 'es_ES.UTF-8');
         $this->attributes['descripcion'] = trim($val);
-        $this->attributes['slug'] = str_slug($val) . '-'. rand(5,100);
+        $this->attributes['slug'] = str_slug($val) . '-'. rand(50,1000);
 
     }
     public function user()

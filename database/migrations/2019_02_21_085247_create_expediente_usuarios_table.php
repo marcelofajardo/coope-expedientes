@@ -20,6 +20,7 @@ class CreateExpedienteUsuariosTable extends Migration
             $table->integer('expediente_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->string('slug')->unique();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('expediente_id')->references('id')->on('expediente');

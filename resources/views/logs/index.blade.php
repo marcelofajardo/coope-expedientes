@@ -1,32 +1,34 @@
-@extends('layouts.app')
+@extends('adminlte::layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/css/admin.css') }}"/>
-@endpush
-
+@section('htmlheader_title')
+    Logs
+@endsection
+@section('main-content')
 @if(Session::has('flash_message'))
-{{Session::get('flash_message')}}
+    {{Session::get('flash_message')}}
 @endif
 
-@section('content')
+<div class="container-fluid">
 
-    <div class="page-title">
-        <div class="title_left">
-            <h3>Actuaciones<small> Listado de todos las Actuaciones generadas hasta la fecha</small>
-            </h3>
-            <br/>
-        </div>
-        <div class="pull-right">
-          <!--
-          @if (Auth::user()->rol->nombre == 'administrador')
-            <a href="{{ route('log.create') }}" class="btn btn-primary"> Nueva Actuación</a>
-          @endif
-        -->
-          <!--  <a href="{{ route('log.eliminated') }}" class="btn btn-warning">Actuaciones Eliminadas</a>-->
-            <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="padding-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+
+                <div class="panel-heading" style="padding-bottom: 20px;">
+                    <div class="row">
+                        <div class="col-md-5 pull-left"><h4>Logs a la fecha</h4></div>
+                        <div class="col-md-5 pull-right">
+                              
+                        </div>
+                    </div>
+                </div>
+                @include('logs._table')
+            </div>
         </div>
     </div>
-
-    @include('logs._table')
-
+</div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/admin.js') }}"></script>
+@endpush

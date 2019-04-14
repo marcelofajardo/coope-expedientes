@@ -31,6 +31,10 @@ class User extends Authenticatable
             'password', 'remember_token',
       ];
 
+      public function profile() {
+            return $this->hasOne('App\Profile');
+      }
+
       public static function boot() {
             parent::boot();
             static::creating(function ($data) {

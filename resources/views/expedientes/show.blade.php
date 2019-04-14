@@ -33,11 +33,11 @@
                         <div class="row">
                               <div class="col-md-6">
                                    <h4 class="">Tipo de Expediente: <strong>{{ $expediente->tipoExpediente->nombre }}</strong></h4>
-                                   <h4 class="">Usuario: <strong>{{ $expediente->username }}</strong></h4>
+                                   <h4 class="">Usuario: <strong>{{ $expediente->user->nombre }}</strong></h4>
                               </div>
                               <div class="col-md-6">
                                     <h4 class="">Nro Expediente: <strong>{{ $expediente->numero }}</strong></h4>
-                                    <h4 class="">Fecha: <strong>{{ $expediente->fecha->format('d-m-Y') }}</strong></h4>
+                                    <h4 class="">Fecha: <strong>{{ $expediente->fecha }}</strong></h4>
                               </div>
                         </div>
                         <hr />

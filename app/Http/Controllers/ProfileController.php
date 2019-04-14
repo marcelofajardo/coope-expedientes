@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Auth;
 use Image;
-
+use Hash;
 class ProfileController extends Controller
 {
 
@@ -95,42 +95,48 @@ class ProfileController extends Controller
 
   }
 
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Profile $profile)
+  public function show($id)
   {
+        $profile = Profile::find($id);
       return view('profiles.show', compact('profile'));
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function edit(Profile $profile)
   {
     return view('profiles.edit', [
         'profile' => $profile,
       ]);
   }
+  public function changepassword()
+  {
+    return view('profiles.changepassword');
+  }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
+      public function nuevapassword(Request $request){
+
+            if (!(\Hash::check($request->get('current-password'), Auth::user()->password))) {
+                  return redirect()->back()->with("error","Contraseña actual incorrecta.");
+            }
+
+            if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+                  return redirect()->back()->with("error","Nueva contraseña igual a la anterior, por favor cámbiela");
+            }
+
+            $validatedData = $request->validate([
+                  'current-password' => 'required',
+                  'new-password' => 'required|string|min:6|confirmed',
+            ]);
+            $user = Auth::user();
+            $user->password = bcrypt($request->get('new-password'));
+            $user->save();
+            return redirect()->back()->with("success","Contraseña Actualizada Satisfactoriamente !");
+
+      }
+
   public function update(Request $request, Profile $profile)
   {
       $data = $request->all();
-
-      if($data['files'])
+      if (isset($data['files']))
       {
             $allowedfileExtension=['jpeg','JPEG', 'pdf','jpg','png','docx','JPG','PDF','PNG','DOCX'];
             $files = $data['files'];
@@ -173,13 +179,17 @@ class ProfileController extends Controller
             }
 
       }else{
-            $actualizado = $profile->fill($profileRequest->all())->update();
+            $actualizado = $profile->fill($request->all())->update();
             if ($actualizado){
               Session::flash('message-success', 'Perfil guardado satisfactoriamente.');
-              return redirect()->route('profile.index');
+              return redirect()->route('profile.show', [
+                    'id' => $profile->id
+              ]);
             }else{
               Session::flash('message-warnning', 'Ocurrió un error al guardar.');
-              return redirect()->route('profile.index');
+              return redirect()->route('profile.show', [
+                    'id' => $profile->id
+              ]);
             }
       }
 

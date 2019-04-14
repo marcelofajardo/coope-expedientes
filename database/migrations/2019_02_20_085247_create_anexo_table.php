@@ -12,7 +12,7 @@ class CreateAnexoTable extends Migration
      * @return void
      */
 
-    
+
     public function up()
     {
         Schema::create('anexo', function (Blueprint $table) {
@@ -26,6 +26,7 @@ class CreateAnexoTable extends Migration
             $table->string('url');
             $table->date('fecha_vto');
             $table->string('anexo_providencia');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

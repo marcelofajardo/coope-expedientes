@@ -247,13 +247,10 @@ class AnexoController extends Controller
 
       public function destroy(Anexo $anexo)
       {
-            $todos = Anexo::all();
-            $ultimo_id = $todos->last();
-            $id_anexo = $anexo['id'];
-            $usuario = $anexo['user_id'];
+
 
             //$archivo = Anexo::where('slug', $slug)->first();
-            if ((Auth::user()->id == $anexo['user_id']) AND ($anexo['id'] == $ultimo_id->id))
+            if (Auth::user()->id == $anexo['user_id'])
             {
                   if (Anexo::where('slug' , $anexo->slug)->delete())
                   {

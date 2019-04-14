@@ -5,7 +5,7 @@
     </div>
     <div class="form-group col-md-8 col-sm-12">
        {!! Form::label('nombre', 'Nombre del Expediente') !!}
-        {!! Form::text('nombre', null, ['class' => 'form-control']) !!}
+        {!! Form::text('nombre', null, ['class' => 'form-control', 'required']) !!}
    </div>
    <!--
    <div class="form-group col-md-4 col-sm-12">
