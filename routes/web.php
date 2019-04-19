@@ -14,7 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('mandarmail', 'ExpedienteController@mandarmail')->name('mandarmail');
 Route::get('mis-comentarios/{anexo}', 'CommentController@getComments');
 Route::get('miscomentarios', 'CommentController@miscomentarios')->name('comment.miscomentarios');
 Route::post('guardar-comentario', 'CommentController@store');
@@ -79,17 +79,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('eliminar/{anexo}', 'AnexoController@destroy')->name('anexo.delete')->middleware('permission:anexo.delete');
         Route::get('eliminarAjax/{id}', 'AnexoController@destroyAjax')->name('anexo.deleteAjax')->middleware('permission:anexo.deleteAjax');
         Route::get('show1/{id}', 'AnexoController@show1')->name('anexo.show1');
-
-
-
         Route::post('borrar/{expediente}', 'ExpedienteController@borrar')           ->name('expediente.borrar')               ->middleware('permission:expediente.borrar');
         Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore');
         Route::get('eliminated', 'ExpedienteController@eliminated')                 ->name('expediente.eliminated')           ->middleware('permission:expediente.eliminated');
-
-
-
-
-
 
     });
 
@@ -112,6 +104,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('borrar/{expediente}', 'ExpedienteController@borrar')           ->name('expediente.borrar')               ->middleware('permission:expediente.borrar');
         Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore');
         Route::get('eliminated', 'ExpedienteController@eliminated')                 ->name('expediente.eliminated')           ->middleware('permission:expediente.eliminated');
+
 
     });
 
@@ -151,7 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('editar/{notificacion}', 'NotificacionController@update')->name('notificacion.update')->middleware('permission:notificacion.update');
         Route::get('eliminar/{notificacion}', 'NotificacionController@destroy')->name('notificacion.delete')->middleware('permission:notificacion.delete');
     });
-  
+
       Route::group(['prefix' => 'profile'], function () {
             // Profiles
             Route::get('listado', 'ProfileController@index')->name('profile.index')->middleware('permission:profile.index');

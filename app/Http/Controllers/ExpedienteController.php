@@ -60,6 +60,7 @@ class ExpedienteController extends Controller
 
       public function index()
       {
+
             $expedientes = Expediente::all();
             Session::put('proviene', 'index');
             return view('expedientes.index', [
@@ -105,6 +106,7 @@ class ExpedienteController extends Controller
 
       public function store(ExpedienteRequest $expedienteRequest)
       {
+
             DB::beginTransaction();
             try {
 
@@ -118,9 +120,30 @@ class ExpedienteController extends Controller
                   $data['slug'] = str_slug($data['caratula']) . "-" . rand(50,1000);
                   DB::table('nroExpediente')->increment('id');
                   $creado = Expediente::create($data);
+                  $enviado = $this->enviar2($creado, "desarrollostello@gmail.com");
+                  if ($enviado)
+                  {
+                        $control = new Log();
+                        $control->user_id = Auth::user()->id;
+                        $control->username = Auth::user()->name;
+                        $control->expediente_id = $creado['id'];
+                        $control->campo = 'MAIL ENVIADO';
+                        $control->descripcion = 'MAIL ENVIDAO';
+                        $control->save();
+                  }else{
+                        $control = new Log();
+                        $control->user_id = Auth::user()->id;
+                        $control->username = Auth::user()->name;
+                        $control->expediente_id = $creado['id'];
+                        $control->campo = 'MAIL NO ENVIADO';
+                        $control->descripcion = 'MAIL NO ENVIDAO';
+                        $control->save();
+                  }
+
                   $administradores = DB::select('SELECT * FROM role_user ru, users u, roles r WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = :admin', ['admin' => 'Administrador']);
             }catch(ValidationException $e)
             {
+                  /*
                   $control = new Log();
                   $control->user_id = Auth::user()->id;
                   $control->username = Auth::user()->name;
@@ -128,6 +151,7 @@ class ExpedienteController extends Controller
                   $control->campo = 'Caratulacion';
                   $control->descripcion = 'Error al intentar crear un Expediente';
                   $control->save();
+                  */
                   DB::rollback();
                   return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar crear el expediente.');
             }
@@ -158,7 +182,7 @@ class ExpedienteController extends Controller
                               $permisos->slug = str_slug($creado['id'] . '-' . $value . '-' . rand(5,10000));
                               $permisos->save();
                               $email_usuario = DB::select("SELECT u.email FROM users u WHERE u.id =" . $permisos->user_id);
-                              $this->enviar($creado, $email_usuario);
+                              //$this->enviar2($creado, $email_usuario);
                         }
                   }
                   $permisos = new ExpedienteUsuarios();
@@ -167,7 +191,7 @@ class ExpedienteController extends Controller
                   $permisos->slug = str_slug($creado['id'] . '-' . str_slug($creado['caratula']) . '-' . rand(5000,10000));
                   $permisos->save();
                   $email_usuario_actual = DB::select("SELECT u.email FROM users u WHERE u.id =" . Auth::user()->id);
-                  $this->enviar($creado, $email_usuario_actual);
+                  //$this->enviar2($creado, $email_usuario_actual);
 
             }catch(ValidationException $e)
             {
@@ -574,45 +598,29 @@ class ExpedienteController extends Controller
       {
       foreach ($administradores as $admin) {
             $email = $admin->email;
-
             \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
                 $message->from('maurotello73@gmail.com', 'Expedientes');
-                $message->to($email)->subject('Sistema Expedientes - Permiso');
+                $message->to($email)->subject('Sistema Expedientes - Permisos');
             });
       }
       }
 
-}
-/*
-
-else {
-      $expediente['archivado'] = 0;
-      $ok = $expediente->save();
-
-      if ($ok)
+      private function enviar2($expediente, $email)
       {
-            $au = new Auditoria();
-            $au->user_id = Auth::user()->id;
-            $au->username = Auth::user()->name;
-            $au->accion = 'Expediente Activado';
-            $au->descripcion = 'El usuario acaba de Activar el Expediente';
-            $auditoria = $au->save();
 
-            $control = new Log();
-            $control->user_id = Auth::user()->id;
-            $control->username = Auth::user()->name;
-            $control->expediente_id = $expediente['id'];
-            $control->campo = 'Archivado';
-            $log = $control->save();
-            if ($auditoria && $log)
-            {
-                  return redirect()->route('expediente.index')->with('success', 'Expediente Activado satisfactoriamente.');
-            }else{
-                  return redirect()->route('expediente.index')->with('warning', 'Expediente Activado satisfactoriamente. Error en Auditoria o Log');
-            }
+        \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
+            $message->from('desarrollostello@gmail.com', 'Expedientes');
 
-      }else{
-            return redirect()->route('expediente.index')->with('warning', 'Ocurrió un error al intentar Archivar el Expediente.');
+            $message->to($email)->subject('Sistema Expedientes - Nuevo Permiso');
+            //dd($message);
+        });
       }
+      private function enviar3($email)
+      {
+        \Mail::Send('emails.permisosprueba',['nombre'=>'Prueba'],function($message) use ($email){
+            $message->from('maurotello73@gmail.com', 'Expedientes');
+            $message->to('maurotello73@gmail.com')->subject('Sistema Expedientes - Nuevo Permiso');
+        });
+      }
+
 }
- */

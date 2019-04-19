@@ -17,6 +17,7 @@ return [
     */
 
     'driver' => env('MAIL_DRIVER', 'smtp'),
+    //'driver' => 'sendmail',
 
     /*
     |--------------------------------------------------------------------------
@@ -28,8 +29,8 @@ return [
     | the Mailgun mail service which will provide reliable deliveries.
     |
     */
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,8 +42,8 @@ return [
     | stay compatible with the Mailgun e-mail application by default.
     |
     */
-
     'port' => env('MAIL_PORT', 587),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +57,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => 'desarrollostello@gmail.com',
+        'name' => 'Expedientes'
     ],
 
     /*
@@ -70,7 +71,7 @@ return [
     | transport layer security protocol should provide great security.
     |
     */
-
+    //
     'encryption' => env('MAIL_ENCRYPTION', 'tls'),
 
     /*
@@ -84,10 +85,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
 
-    'password' => env('MAIL_PASSWORD'),
-
+    'username' => env('MAIL_USERNAME', 'desarrollostello@gmail.com'),
+   // 'password' => env('MAIL_PASSWORD', ),
     /*
     |--------------------------------------------------------------------------
     | Sendmail System Path
@@ -111,7 +111,7 @@ return [
     | of the emails. Or, you may simply stick with the Laravel defaults!
     |
     */
-
+'pretend' => false,
     'markdown' => [
         'theme' => 'default',
 

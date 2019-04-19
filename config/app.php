@@ -164,6 +164,7 @@ return [
         Acacha\AdminLTETemplateLaravel\Providers\AdminLTETemplateServiceProvider::class,
         Caffeinated\Shinobi\ShinobiServiceProvider::class,
         Askedio\SoftCascade\Providers\GenericServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -229,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
         'Shinobi' => Caffeinated\Shinobi\Facades\Shinobi::class,
+        'Debugbar' => 'Barryvdh\Debugbar\Facade',
     ],
 
 ];
