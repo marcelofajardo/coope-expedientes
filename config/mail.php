@@ -29,7 +29,7 @@ return [
     | the Mailgun mail service which will provide reliable deliveries.
     |
     */
-    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
 
 
     /*
@@ -42,7 +42,7 @@ return [
     | stay compatible with the Mailgun e-mail application by default.
     |
     */
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 2525),
 
 
     /*
@@ -86,8 +86,8 @@ return [
     */
 
 
-    'username' => env('MAIL_USERNAME', 'desarrollostello@gmail.com'),
-   // 'password' => env('MAIL_PASSWORD', ),
+    'username' => env('MAIL_USERNAME', '2634435b1b4ee5'),
+    'password' => env('MAIL_PASSWORD', '9a87c53de0b3f1'),
     /*
     |--------------------------------------------------------------------------
     | Sendmail System Path
@@ -110,7 +110,7 @@ return [
     | theme and component paths here, allowing you to customize the design
     | of the emails. Or, you may simply stick with the Laravel defaults!
     |
-    */
+
 'pretend' => false,
     'markdown' => [
         'theme' => 'default',
@@ -119,7 +119,7 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
+*/
     /*
     |--------------------------------------------------------------------------
     | Log Channel

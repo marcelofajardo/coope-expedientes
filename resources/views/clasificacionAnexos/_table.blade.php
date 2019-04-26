@@ -1,4 +1,4 @@
-<div class="table-responsive" style="width: 100%;">
+<div class="table-responsive" style="width: 100%; padding-left: 15px; margin-bottom: 15px;">
 <table class="table table-striped table-hover" id="table">
     <thead>
     <tr>
@@ -15,12 +15,12 @@
 
             <td>
                 @if($action == 'index')
-                    <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-warning btn-xs">Editar</a>
-                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
+                    <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-sm pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
     class="btn btn-danger">Eliminar</a>
                 @else
-                    <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-danger btn-xs">Restaurar</a>
-                    <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-xs">Borrado Definitivo</a>
+                    <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-danger btn-sm">Restaurar</a>
+                    <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-sm">Borrado Definitivo</a>
                 @endif
             </td>
         </tr>

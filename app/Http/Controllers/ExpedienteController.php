@@ -9,6 +9,7 @@ use App\Comment;
 use App\ExpedienteUsuarios;
 use App\User;
 use App\Log;
+use Mail;
 use App\ClasificacionAnexo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -60,7 +61,21 @@ class ExpedienteController extends Controller
 
       public function index()
       {
-
+            /*
+            $user = User::findOrFail(1);
+            Mail::send('emails.permisosprueba',['user' => $user], function ($message) {
+                  $message->from('maurotello73@gmail.com', $name = null);
+                  $message->sender('maurotello73@gmail.com', $name = null);
+                  $message->to('maurotello73@gmail.com', $name = null);
+                  $message->subject('Prueba');
+                  $message->getSwiftMessage();
+            });*/
+            /*
+              Mail::send('emails.permisosprueba', ['user' => $user], function ($m) use ($user) {
+                  $m->from('desarrollostello@gmail.com', 'Your Application');
+                  $m->to($user->email, $user->name)->subject('Your Reminder!');
+              });
+              */
             $expedientes = Expediente::all();
             Session::put('proviene', 'index');
             return view('expedientes.index', [
@@ -75,7 +90,7 @@ class ExpedienteController extends Controller
       public function eliminated()
       {
             $expedientes = Expediente::onlyTrashed()->get();
-            return view('expedientes.index', ['expedientes' => $expedientes, 'action' => 'restore']);
+            return view('expedientes.eliminated', ['expedientes' => $expedientes, 'action' => 'restore']);
       }
 
 
@@ -120,7 +135,7 @@ class ExpedienteController extends Controller
                   $data['slug'] = str_slug($data['caratula']) . "-" . rand(50,1000);
                   DB::table('nroExpediente')->increment('id');
                   $creado = Expediente::create($data);
-                  $enviado = $this->enviar2($creado, "desarrollostello@gmail.com");
+                  /*
                   if ($enviado)
                   {
                         $control = new Log();
@@ -131,6 +146,8 @@ class ExpedienteController extends Controller
                         $control->descripcion = 'MAIL ENVIDAO';
                         $control->save();
                   }else{
+
+
                         $control = new Log();
                         $control->user_id = Auth::user()->id;
                         $control->username = Auth::user()->name;
@@ -139,37 +156,11 @@ class ExpedienteController extends Controller
                         $control->descripcion = 'MAIL NO ENVIDAO';
                         $control->save();
                   }
+                  */
 
                   $administradores = DB::select('SELECT * FROM role_user ru, users u, roles r WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = :admin', ['admin' => 'Administrador']);
-            }catch(ValidationException $e)
-            {
-                  /*
-                  $control = new Log();
-                  $control->user_id = Auth::user()->id;
-                  $control->username = Auth::user()->name;
-                  $control->expediente_id = $creado['id'];
-                  $control->campo = 'Caratulacion';
-                  $control->descripcion = 'Error al intentar crear un Expediente';
-                  $control->save();
-                  */
-                  DB::rollback();
-                  return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar crear el expediente.');
-            }
-            catch(\Exception $e)
-            {
-                  $control = new Log();
-                  $control->user_id = Auth::user()->id;
-                  $control->username = Auth::user()->name;
-                  $control->expediente_id = $creado['id'];
-                  $control->campo = 'Caratulacion';
-                  $control->descripcion = 'Error al intentar crear un Expediente';
-                  $control->save();
-                  DB::rollback();
-                  throw $e;
-            }
 
-            try
-            {
+
                   $email_administradores = DB::select("
                         SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
                   ");
@@ -182,7 +173,8 @@ class ExpedienteController extends Controller
                               $permisos->slug = str_slug($creado['id'] . '-' . $value . '-' . rand(5,10000));
                               $permisos->save();
                               $email_usuario = DB::select("SELECT u.email FROM users u WHERE u.id =" . $permisos->user_id);
-                              //$this->enviar2($creado, $email_usuario);
+
+                              $this->enviar2($creado, $email_usuario[0]->email);
                         }
                   }
                   $permisos = new ExpedienteUsuarios();
@@ -191,8 +183,9 @@ class ExpedienteController extends Controller
                   $permisos->slug = str_slug($creado['id'] . '-' . str_slug($creado['caratula']) . '-' . rand(5000,10000));
                   $permisos->save();
                   $email_usuario_actual = DB::select("SELECT u.email FROM users u WHERE u.id =" . Auth::user()->id);
-                  //$this->enviar2($creado, $email_usuario_actual);
-
+                  //dd($email_usuario_actual[0]->email);
+                  $this->enviar2($creado, $email_usuario_actual[0]->email);
+                  DB::commit();
             }catch(ValidationException $e)
             {
                   $control = new Log();
@@ -216,7 +209,7 @@ class ExpedienteController extends Controller
                   throw $e;
             }
 
-            DB::commit();
+
             return redirect()->route('expediente.index')->with('success','Expediente Creado satisfactoriamente');
       }
       public function show(Expediente $expediente)
@@ -599,7 +592,7 @@ class ExpedienteController extends Controller
       foreach ($administradores as $admin) {
             $email = $admin->email;
             \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
-                $message->from('maurotello73@gmail.com', 'Expedientes');
+                $message->from('expedientes@desarrollostello.com', 'Expedientes');
                 $message->to($email)->subject('Sistema Expedientes - Permisos');
             });
       }
@@ -609,18 +602,8 @@ class ExpedienteController extends Controller
       {
 
         \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
-            $message->from('desarrollostello@gmail.com', 'Expedientes');
-
+            $message->from('expedientes@desarrollostello.com', 'Expedientes');
             $message->to($email)->subject('Sistema Expedientes - Nuevo Permiso');
-            //dd($message);
         });
       }
-      private function enviar3($email)
-      {
-        \Mail::Send('emails.permisosprueba',['nombre'=>'Prueba'],function($message) use ($email){
-            $message->from('maurotello73@gmail.com', 'Expedientes');
-            $message->to('maurotello73@gmail.com')->subject('Sistema Expedientes - Nuevo Permiso');
-        });
-      }
-
 }

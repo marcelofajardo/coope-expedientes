@@ -1,25 +1,31 @@
-@extends('layouts.app')
+@extends('adminlte::layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/css/admin.css') }}"/>
-@endpush
+@section('htmlheader_title')
+    Expedientes
+@endsection
+@section('main-content')
+@if(Session::has('flash_message'))
+    {{Session::get('flash_message')}}
+@endif
 
-@section('content')
+<div class="container-fluid">
 
-    <div class="page-title">
-        <div class="title_left">
-            <h3>Clasificación de los Anexos<br/> <small> listado de todas los ítems eliminados en el sistema hasta la fecha</small>
-            </h3>
-            <br/>
-        </div>
-        <div class="pull-right">
-            <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
-            <br/>
+    <div class="row" style="display: flex; flex-flow: row wrap; justify-content: center;">
+        <div class="col-md-8">
+            <div class="panel panel-default" style="padding-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <div class="panel-heading" style="padding-bottom: 20px;">
+                    <div class="row">
+                        <div class="col-md-5 pull-left"><h4>Clasificación de Anexos Archivados</h4></div>
+                        <div class="pull-right">
+                           <a style="margin-right: 15px;" class="btn btn-md btn-primary" href="{{ URL::previous() }}">Volver</a>
+                        </div>
+                    </div>
+                </div>
+                @include('clasificacionAnexos._table')
+            </div>
         </div>
     </div>
-
-    @include('clasificacionAnexos._table')
-
+</div>
 @endsection
 
 @push('scripts')

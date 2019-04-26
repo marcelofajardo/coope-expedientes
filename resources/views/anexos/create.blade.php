@@ -31,7 +31,7 @@
                   </p>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                     {{ Form::open(['route' => ['anexo.store'], 'enctype' => 'multipart/form-data']) }}
                         @include('anexos._form')
                     {{ Form::close() }}

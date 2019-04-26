@@ -81,7 +81,7 @@ class ClasificacionAnexoController extends Controller
       public function eliminated()
       {
             $clasificacionAnexosEliminados = ClasificacionAnexo::onlyTrashed()->get();
-            return view('clasificacionanexos.eliminated', ['clasificacionAnexos' => $clasificacionAnexosEliminados, 'action' => 'restore']);
+            return view('clasificacionAnexos.eliminated', ['clasificacionAnexos' => $clasificacionAnexosEliminados, 'action' => 'restore']);
       }
 
       public function restore($slug)

@@ -1,26 +1,33 @@
-@extends('layouts.app')
+@extends('adminlte::layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/css/admin.css') }}"/>
-@endpush
+@section('htmlheader_title')
+    Expedientes
+@endsection
+@section('main-content')
+@if(Session::has('flash_message'))
+    {{Session::get('flash_message')}}
+@endif
 
-@section('content')
+<div class="container-fluid">
 
-    <div class="page-title">
-        <div class="title_left">
-            <h3>Expedientes Archivados<br/>
-                <small> listado de todas los Expedientes Archivados en el sistema hasta la fecha</small>
-            </h3>
-            <br/>
-        </div>
-        <div class="pull-right">
-            <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
-            <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="padding-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+
+                <div class="panel-heading" style="padding-bottom: 20px;">
+                    <div class="row">
+                        <div class="col-md-5 pull-left"><h4>Expedientes Archivados</h4></div>
+                        <div class="pull-right">
+                           <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
+                           <br/>
+                        </div>
+                    </div>
+                </div>
+                @include('expedientes._table')
+            </div>
         </div>
     </div>
-
-    @include('expedientes._table')
-
+</div>
 @endsection
 
 @push('scripts')

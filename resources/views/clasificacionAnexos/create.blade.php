@@ -25,13 +25,13 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Nueva Clasificación de Anexos
+                <div class="panel-heading" style="height: 60px;">Nueva Clasificación de Anexos
                   <p class="pull-right">
-                    <a class="btn btn-sm btn-primary" href="{{ URL::previous() }}">Volver</a>
+                    <a class="btn btn-primary" href="{{ URL::previous() }}">Volver</a>
                   </p>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                     {{ Form::open(['route' => 'clasificacion.store']) }}
                         @include('clasificacionAnexos._form')
                     {{ Form::close() }}

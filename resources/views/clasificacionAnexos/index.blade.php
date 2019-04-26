@@ -18,11 +18,10 @@
                     <div class="row">
                         <div class="col-md-5 pull-left"><h4>Clasificación de Anexos</h4></div>
                         <div class="col-md-5 pull-right">
-
-                            <a href="{{ route('clasificacion.create') }}" class="btn btn-sm btn-primary pull-right">
+                            <a href="{{ route('clasificacion.create') }}" class="btn btn-md btn-primary pull-right">
                             Nueva Clasificación
                             </a>
-                            <a href="{{ route('derivacion.eliminated') }}" class="btn btn-warning"> Derivaciones Eliminadas</a>
+                            <a href="{{ route('clasificacion.eliminated') }}" class="btn btn-warning">Clasificaciones Anexos Eliminadas</a>
 
                         </div>
                     </div>

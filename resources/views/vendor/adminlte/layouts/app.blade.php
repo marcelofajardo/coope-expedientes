@@ -38,7 +38,13 @@ desired effect
     @include('adminlte::layouts.partials.sidebar')
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+
+
+          @if (Request::path() == 'home')
+                <div class="content-wrapper" style="background: url({{ asset('img/cem_bg.jpg') }}) no-repeat; background-size: cover; background-clip: boder-box">
+          @else
+                <div class="content-wrapper">
+          @endif
 
         @include('adminlte::layouts.partials.contentheader')
 

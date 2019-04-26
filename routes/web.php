@@ -14,6 +14,18 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/enviarmail', function(){
+      $data['title'] = "Este es el titulo";
+      \Mail::send('emails.permisosprueba', $data, function($message){
+            $message->from('expedientes@desarrollostello.com', 'A VERRR');
+            $message->to('maurotello73@gmail.com', 'Receiver Name')->subject('Subject');
+      });
+});
+
+
+
+
 Route::get('mandarmail', 'ExpedienteController@mandarmail')->name('mandarmail');
 Route::get('mis-comentarios/{anexo}', 'CommentController@getComments');
 Route::get('miscomentarios', 'CommentController@miscomentarios')->name('comment.miscomentarios');
@@ -23,7 +35,14 @@ Route::get('delete/{comment}', 'CommentController@delete')->name('comment.delete
 
 Route::group(['middleware' => 'auth'], function () {
 
-
+      Route::get('enviar', ['as' => 'enviar', function () {
+            $data = ['link' => 'http://styde.net'];
+            \Mail::send('emails.permisosprueba', $data, function ($message) {
+                  $message->from('maurotello73@gmail.com', 'Styde.Net');
+                  $message->to('mauro-57840f@inbox.mailtrap.io')->subject('Notificación');
+            });
+            return "Se envío el email";
+      }]);
       /*
 	Route::group(['prefix' => 'rol'], function () {
         Route::get('listado', 'RolController@index')->name('rol.index');
@@ -47,10 +66,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('editar/{clasificacionAnexo}', 'ClasificacionAnexoController@update')->name('clasificacion.update')->middleware('permission:clasificacion.update');
         Route::get('eliminar/{clasificacionAnexo}', 'ClasificacionAnexoController@destroy')->name('clasificacion.destroy')->middleware('permission:clasificacion.destroy');
         Route::get('delete/{clasificacionAnexo}', 'ClasificacionAnexoController@delete')->name('clasificacion.delete')->middleware('permission:clasificacion.delete');
-
-
-        Route::get('restaurar', 'CentroPrestadorController@eliminated')->name('centroPrestador.eliminated');
-        Route::get('restore/{centroPrestador}', 'CentroPrestadorController@restore')->name('centroPrestador.restore');
+        Route::get('eliminated', 'ClasificacionAnexoController@eliminated')->name('clasificacion.eliminated');
+        Route::get('restore/{clasificacionAnexo}', 'ClasificacionAnexoController@restore')->name('clasificacion.restore');
 
 
 

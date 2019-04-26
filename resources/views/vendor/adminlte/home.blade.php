@@ -11,10 +11,9 @@
 			<div class="col-md-8 col-md-offset-2">
 
 				<!-- Default box -->
-				<div class="box">
-					<div class="box-header with-border">
-						<h3 class="box-title">Bienvenido</h3>
-
+				<div class="box" style="background: none; border: none;">
+					<!--
+					<div class="box-header">
 						<div class="box-tools pull-right">
 							<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
 								<i class="fa fa-minus"></i></button>
@@ -22,10 +21,18 @@
 								<i class="fa fa-times"></i></button>
 						</div>
 					</div>
+				-->
 					<div class="box-body">
 						<div class="col-md-12 text-center">
-			                        <h1>Módulo de Gestión de Información</h1>
-			                        <h1>y Expediente Electrónico</h1>
+	                                    <img class="img-responsive center-block" src="{{ asset('img/logo_cem.png')  }}" />
+	                              </div>
+						<div class="col-md-12 text-center" style="margin-top: 30px">
+			                        <h1 style="color: #ffffff; font-weight: 600; text-shadow: 2px 2px 4px #000000;">Módulo de Gestión de Información</h1>
+			                        <h1 style="color: #ffffff; font-weight: 600;  text-shadow: 2px 2px 4px #000000;">y Expediente Electrónico</h1>
+			                  </div>
+						<div class="col-md-12 text-center" style="margin-top: 30px">
+			                       <a style="margin-right: 20px;" href="{{ route('expediente.create') }}" class="btn btn-primary btn-lg">Nuevo Expediente</a>
+						     <a href="{{ route('expediente.misexpedientes') }}" class="btn btn-primary btn-lg">Mis Expedientes</a>
 			                  </div>
 					</div>
 					<!-- /.box-body -->
