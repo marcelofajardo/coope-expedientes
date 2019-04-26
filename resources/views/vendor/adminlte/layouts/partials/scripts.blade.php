@@ -10,17 +10,14 @@
       user experience. Slimscroll is required when using the
       fixed layout. -->
 
-      <script>
-            $(function(){
-                  $('.fechas').datepicker({
-                        formatDate: 'dd-mm-yy'
-                  });
-            });
-      </script>
-      <script>
-            $(document).ready(function(){
-                  $(function() {
-                        $( "#tabs" ).tabs();
-                  });
-            });
-      </script>
+
+<script>
+    $(document).ready(function(){
+          $(function() {
+                $( "#tabs" ).tabs();
+          });
+          $("#fecha").datepicker({
+              format: '{{ config("app.date_format_js") }}'
+          });
+    });
+</script>

@@ -46,7 +46,29 @@ class UserController extends Controller
       {
             $user = User::find($id);
             $roles = Role::get();
-            return view('users.edit', compact('user', 'roles'));
+            return view('users.edit', [
+                'user' => $user,
+                'roles' => $roles
+            ]);
+      }
+      public function activo($id)
+      {
+            $user = User::find($id);
+            ($user->estado == 'Activo')?$user->estado = 'Inactivo':$user->estado = 'Activo';
+            $guardado = $user->save();
+            $users = User::paginate();
+            if($guardado){
+                
+                return redirect()->route('users.index')
+                    ->with('success', 'Usuario guardado con éxito');
+            }else{
+                return redirect()->route('users.index')
+                    ->with('danger', 'Ocurrió un error al intentaractualizar el usuario');
+            }
+
+            return view('users.index', [
+                'users' => $users
+            ]);
       }
 
       public function create()
@@ -57,7 +79,6 @@ class UserController extends Controller
       }
       public function store(Request $request)
       {
-
             $au = new User();
             $au->name = $request->name;
             $au->email = $request->email;
@@ -100,8 +121,8 @@ class UserController extends Controller
     public function destroy($id)
     {
             $user = User::find($id);
-            $admin = $user->getRoles()[0];
-
+            //$admin = $user->getRoles()[0];
+            //dd($admin);
             $administradores = DB::Select ("
                   SELECT
                   COUNT(u.id) AS cantidad
@@ -120,7 +141,7 @@ class UserController extends Controller
             $expUsuario =  ExpedienteUsuarios::where('user_id', $id)->count();
             if($cantidadAdmin == 1)
             {
-                return redirect()->route('users.index')->with('danger', 'El Usuario no puede ser borrado porque es Administrador');
+                return redirect()->route('users.index')->with('danger', 'El Usuario no puede ser borrado porque es el único Administrador');
             }
             if (($expedientes > 0) OR ($expUsuario > 0))
             {

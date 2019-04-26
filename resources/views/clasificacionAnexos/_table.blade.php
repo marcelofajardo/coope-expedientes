@@ -3,8 +3,7 @@
     <thead>
     <tr>
         <th>Nombre</th>
-
-        <th style="width: 17%">Opciones</th>
+        <th style="width: 30%">Opciones</th>
     </tr>
     </thead>
 
@@ -15,12 +14,12 @@
 
             <td>
                 @if($action == 'index')
-                    <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-sm pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
+                    <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-sm pull-rigth" onclick="return confirm('Está seguro que desea borrar este ítem?')"
     class="btn btn-danger">Eliminar</a>
                 @else
-                    <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-danger btn-sm">Restaurar</a>
-                    <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-sm">Borrado Definitivo</a>
+                    <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-primary btn-sm">Restaurar</a>
+                    <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-sm"  onclick="return confirm('Está seguro que desea Borrar definitivamente este ítem?')">Borrado Definitivo</a>
                 @endif
             </td>
         </tr>

@@ -8,7 +8,7 @@
 @section('main-content')
 <div class="container">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10">
             <div class="rounded panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <div class="panel-heading">
                       <h3 class="panel-title text-center" style="padding: 20px 0; font-size: 20px">Expediente: <strong>{{ $anexo->expediente->caratula }}</strong></h3>

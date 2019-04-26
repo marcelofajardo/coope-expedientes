@@ -21,10 +21,19 @@
 <div class="form-group">
 	<ul class="list-unstyled">
 		@foreach($permissions as $permission)
+
+		@php
+			$porciones = explode(".", $permission->name);
+			$porciones[0];
+			if ($porciones[0] == 'Clasificacion'){
+			
+			}
+		@endphp
 	    <li>
 	        <label>
 	        {{ Form::checkbox('permissions[]', $permission->id, null) }}
 	        {{ $permission->name }}
+
 	        <em>({{ $permission->description }})</em>
 	        </label>
 	    </li>

@@ -6,6 +6,7 @@ use App\ClasificacionAnexo;
 use App\Http\Requests\TipoExpedienteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class ClasificacionAnexoController extends Controller
 {
@@ -67,8 +68,9 @@ class ClasificacionAnexoController extends Controller
            }
       }
 
-      public function delete(ClasificacionAnexo $clasificacionAnexo)
+      public function delete($slug)
       {
+          $clasificacionAnexo = ClasificacionAnexo::withTrashed()->where('slug', '=', $slug)->first();
             if($clasificacionAnexo->forceDelete())
            {
                  return redirect()->route('clasificacion.index')->with('success','Clasificación borrada satisfactoriamente.');
@@ -86,7 +88,7 @@ class ClasificacionAnexoController extends Controller
 
       public function restore($slug)
       {
-          $clasificacionAnexo = ClasificacionAnexo::withTrashed()->where('slug', '=', $id)->first();
+          $clasificacionAnexo = ClasificacionAnexo::withTrashed()->where('slug', '=', $slug)->first();
           if($clasificacionAnexo->restore())
           {
                 return redirect()->route('clasificacion.index')->with('success','Clasificación Restaurada satisfactoriamente.');

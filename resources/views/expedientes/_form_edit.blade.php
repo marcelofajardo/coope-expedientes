@@ -1,7 +1,7 @@
 <div class="row">
       <div class="form-group col-md-2 col-sm-12">
           {!! Form::label('fecha', 'Fecha') !!}
-          {!! Form::text('fecha', null, ['class' => 'form-control fechas', 'required']) !!}
+          {!! Form::text('fecha', null, ['class' => 'form-control', 'required']) !!}
       </div>
     <div class="form-group col-md-4 col-sm-12">
        {!! Form::label('nombre', 'Nombre del Expediente') !!}
@@ -88,17 +88,3 @@
 	    @endforeach
     </ul>
 </div>
-@push('scripts')
-
-<script>
-
-var picker = new Pikaday({ field: document.getElementById('fecha') });
-$( document ).ready(function() {
-    var calendario = new Pikaday(
-    {
-      field: document.getElementById('fecha'),
-    });
-
-});
-</script>
-@endpush

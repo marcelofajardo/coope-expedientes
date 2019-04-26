@@ -11,11 +11,11 @@
 <div class="container-fluid">
 
     <div class="row" style="display: flex; flex-flow: row wrap; justify-content: center;">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="panel panel-default" style="padding-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <div class="panel-heading" style="padding-bottom: 20px;">
                     <div class="row">
-                        <div class="col-md-5 pull-left"><h4>Clasificación de Anexos Archivados</h4></div>
+                        <div class="col-md-7 pull-left"><h4>Clasificación de Anexos Archivados</h4></div>
                         <div class="pull-right">
                            <a style="margin-right: 15px;" class="btn btn-md btn-primary" href="{{ URL::previous() }}">Volver</a>
                         </div>

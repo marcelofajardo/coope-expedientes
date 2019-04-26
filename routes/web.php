@@ -196,6 +196,9 @@ Route::group(['middleware' => 'auth'], function () {
       Route::patch('permisos/{permiso}', 'PermissionController@update')->name('permisos.update')->middleware('permission:permisos.update');
 
 	//Users
+
+
+
 	Route::get('users', 'UserController@index')->name('users.index')->middleware('permission:users.index');
       Route::post('users/store', 'UserController@store')->name('users.store')->middleware('permission:users.create');
       Route::get('users/{user}/activo', 'UserController@activo')->name('users.activo')->middleware('permission:users.activo');

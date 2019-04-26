@@ -11,17 +11,16 @@
 <div class="container-fluid">
 
       <div class="row" style="display: flex; flex-flow: row wrap; justify-content: center;">
-          <div class="col-md-8">
+          <div class="col-md-10">
             <div class="panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-
                 <div class="panel-heading" style="padding-bottom: 20px;">
                     <div class="row">
-                        <div class="col-md-5 pull-left"><h4>Clasificación de Anexos</h4></div>
-                        <div class="col-md-5 pull-right">
+                        <div class="col-md-4 pull-left"><h4>Clasificación de Anexos</h4></div>
+                        <div class="col-md-6 pull-right">
                             <a href="{{ route('clasificacion.create') }}" class="btn btn-md btn-primary pull-right">
                             Nueva Clasificación
                             </a>
-                            <a href="{{ route('clasificacion.eliminated') }}" class="btn btn-warning">Clasificaciones Anexos Eliminadas</a>
+                            <a href="{{ route('clasificacion.eliminated') }}" class="btn btn-md btn-warning">Registros Eliminadas</a>
 
                         </div>
                     </div>

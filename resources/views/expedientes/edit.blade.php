@@ -21,7 +21,7 @@
 
 
 @section('main-content')
-<div class="container">
+<div class="container-fluid">
     <div class="page-title">
         <div class="title_left">
             <h3>Editar Expediente <small> modificar el ítem seleccionado.</small>

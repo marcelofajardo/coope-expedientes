@@ -57,3 +57,4 @@
         {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
     </div>
 </div>
+@push('scripts')

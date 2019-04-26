@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Auditoria;
+use Illuminate\Support\Facades\Auth;
 
 
 class ClasificacionAnexo extends Model
@@ -21,7 +22,7 @@ class ClasificacionAnexo extends Model
 
       public function setNombreAttribute($val)
       {
-            $this->attributes['nombre'] = strtolower(trim($val));
+            $this->attributes['nombre'] = trim($val);
             $this->attributes['slug'] = str_slug($val);
       }
 

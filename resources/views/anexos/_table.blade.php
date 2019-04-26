@@ -18,7 +18,7 @@
         <tr>
             <td> {{ $anexo->created_at->format('d-m-Y') }} </td>
             <td> {{ $anexo->anexo_providencia }} </td>
-            <td> {{ $anexo->file }} </td>
+            <td> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" target="_blank">{{ $anexo->file }}</a></td>
             <td> {{ substr($anexo->descripcion, 0, 85) }} </td>
             <td> {{ $anexo->username }} </td>
             @if ($anexo->clasificacion)
