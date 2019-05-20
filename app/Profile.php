@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,11 +44,19 @@ class Profile extends Model
       {
             //	setlocale(LC_TIME, 'es_ES.UTF-8');
             $this->attributes['apellido'] = trim($val);
-            $this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
+            //$this->attributes['slug'] = str_slug($val) . '-'. rand(5,10);
       }
       public function user()
       {
             return $this->belongsTo('App\User');
+      }
+
+      public static function boot() {
+            parent::boot();
+            static::updated(function ($data) {
+                  
+
+            });
       }
 
 }

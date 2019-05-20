@@ -3,23 +3,31 @@
     <thead>
     <tr>
         <th>Nombre</th>
-        <th style="width: 30%">Opciones</th>
+        <th style="width: 20%">Opciones</th>
     </tr>
     </thead>
 
     <tbody>
     @foreach($clasificacionAnexos as $ca)
         <tr>
-            <td> {{ $ca->nombre }} </td>
+            <td style="padding-left: 25px; font-weight: 600"> {{ $ca->nombre }} </td>
 
-            <td>
+            <th style="width: 20%">
                 @if($action == 'index')
-                    <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-primary btn-sm">Editar</a>
-                    <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-sm pull-rigth" onclick="return confirm('Está seguro que desea borrar este ítem?')"
+                      @can('clasificacion.edit')
+                           <a href="{{ route('clasificacion.edit', $ca) }}" class="btn btn-primary btn-sm">Editar</a>
+                     @endcan
+                     @can('clasificacion.destroy')
+                          <a href="{{ route('clasificacion.destroy', $ca)}}" class="btn btn-danger btn-sm pull-rigth" onclick="return confirm('Está seguro que desea borrar este ítem?')"
+                    @endcan
     class="btn btn-danger">Eliminar</a>
                 @else
-                    <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-primary btn-sm">Restaurar</a>
+                      @can('clasificacion.restore')
+                           <a href="{{ route('clasificacion.restore', $ca) }}" class="btn btn-primary btn-sm">Restaurar</a>
+                     @endcan
+                     @can('clasificacion.delete')
                     <a href="{{ route('clasificacion.delete', $ca) }}" class="btn btn-danger btn-sm"  onclick="return confirm('Está seguro que desea Borrar definitivamente este ítem?')">Borrado Definitivo</a>
+                        @endcan
                 @endif
             </td>
         </tr>

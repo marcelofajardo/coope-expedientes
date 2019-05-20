@@ -79,7 +79,7 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="{{ route('profile.show', Auth::user()->id ) }}" class="btn btn-default btn-flat">Perfil</a>
+                                    <a href="{{ route('profile.show', Auth::user()->profile->id ) }}" class="btn btn-default btn-flat">Perfil</a>
                                     <a href="{{ route('profile.changepassword') }}" class="btn btn-default btn-flat">Cambiar Clave</a>
                                 </div>
                                 <div class="pull-right">

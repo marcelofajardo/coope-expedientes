@@ -2,43 +2,42 @@
 <table class="table table-striped table-hover" id="table">
     <thead>
     <tr>
-        <th>Fecha</th>
-        <th>Anexo/Providencia</th>
-        <th>Archivo</th>
-        <th>Descripción</th>
-        <th>Usuario</th>
-        <th>Tipo de Anexo</th>
-
-        <th style="width: 17%">Opciones</th>
+        <th style="width: 15%; text-align:center;">Fecha</th>
+        <th style="width: 15%; text-align:center;">Anexo/Providencia</th>
+        <th style="width: 25%; text-align:center;">Archivo</th>
+        <th style="width: 10%; text-align:center;">Usuario</th>
+        <th style="width: 15%; text-align:center;">Tipo de Anexo</th>
+        <th style="width: 10%;  text-align:center;">Opciones</th>
     </tr>
     </thead>
 
-    <tbody>
-    @foreach($anexos as $anexo)
-        <tr>
-            <td> {{ $anexo->created_at->format('d-m-Y') }} </td>
-            <td> {{ $anexo->anexo_providencia }} </td>
-            <td> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" target="_blank">{{ $anexo->file }}</a></td>
-            <td> {{ substr($anexo->descripcion, 0, 85) }} </td>
-            <td> {{ $anexo->username }} </td>
-            @if ($anexo->clasificacion)
-              <td> {{ $anexo->clasificacion->nombre }} </td>
-            @else
-              <td> </td>
-            @endif
+      <tbody>
+            @foreach($anexos as $anexo)
+                  <tr>
+                        <th style="width: 15%; text-align:center; font-weight: 600"> <a title="Visualizar Anexo" href="{{ route('anexo.show', $anexo) }}">{{ $anexo->created_at->format('d-m-Y') }} </a></td>
+                        <th style="width: 15%; text-align:center;"> {{ $anexo->anexo_providencia }} </td>
+                        <th style="width: 25%; text-align:center;"> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" title="Ver Anexo" target="_blank">{{ $anexo->file }}</a></td>
 
-            <td>
-                @if($action == 'index')
-                    <a href="{{ route('anexo.show', $anexo) }}" class="btn btn-primary btn-xs pull-rigth">Visualizar</a>
+                        <th style="width: 10%; text-align:center;"> {{ $anexo->username }} </td>
+                        @if ($anexo->clasificacion)
+                              <th style="width: 15%; text-align:center;"> {{ $anexo->clasificacion->nombre }} </td>
+                        @else
+                              <th style="width: 15%; text-align:center;"> </td>
+                        @endif
 
-                    <a href="{{ route('anexo.delete', $anexo)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
-    class="btn btn-danger">Eliminar</a>
-                @else
-                    <a href="{{ route('anexo.restore', $anexo) }}" class="btn btn-danger btn-xs">Restaurar</a>
-                @endif
-            </td>
-        </tr>
-    @endforeach
-    </tbody>
+                        <th style="width: 10%;  text-align:center;">
+                        @if($action == 'index')
+                              @can('anexo.delete')
+                                    <a href="{{ route('anexo.delete', $anexo)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')" class="btn btn-danger">Eliminar</a>
+                              @endcan
+                        @else
+                              @can('anexo.restore')
+                                    <a href="{{ route('anexo.restore', $anexo) }}" class="btn btn-danger btn-xs">Restaurar</a>
+                              @endcan
+                        @endif
+                  </td>
+            </tr>
+      @endforeach
+      </tbody>
 </table>
 </div>

@@ -6,7 +6,7 @@
 
 
 @section('main-content')
-<div class="container-fluid" style="width: 90%">
+<div class="container-fluid" style="width: 95%; padding: 0px;">
       <div class="row">
             <div class="page-title">
                   <div class="title_left">
@@ -48,7 +48,7 @@
                               </ul>
                               <div id="tabs-1">
                                     @if($logs)
-                                          @include('logs._table_logs_expedientes')
+                                          @include('auditorias._table_auditorias_expedientes')
                                     @endif
                               </div>
                               <div id="tabs-2">

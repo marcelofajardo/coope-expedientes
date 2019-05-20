@@ -34,6 +34,7 @@ class Auditoria extends Model
       'modelo',
       'componente_id',
       'descripcion',
+      'expediente_id',
       'slug'
     ];
 

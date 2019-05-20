@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Expediente;
 use App\ExpedienteUsuarios;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -45,7 +46,12 @@ class UserController extends Controller
       public function edit($id)
       {
             $user = User::find($id);
-            $roles = Role::get();
+            if(Auth::user()->getRoles()[0] != 'admin')
+            {
+                  $roles = Role::where('slug', '!=', 'admin')->get();
+            }else{
+                  $roles = Role::get();
+            }
             return view('users.edit', [
                 'user' => $user,
                 'roles' => $roles
@@ -58,7 +64,7 @@ class UserController extends Controller
             $guardado = $user->save();
             $users = User::paginate();
             if($guardado){
-                
+
                 return redirect()->route('users.index')
                     ->with('success', 'Usuario guardado con éxito');
             }else{
@@ -74,7 +80,6 @@ class UserController extends Controller
       public function create()
       {
             $roles = Role::get();
-            //return view('adminlte::auth.register');
             return view('users.create', compact('roles'));
       }
       public function store(Request $request)
@@ -112,7 +117,6 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user->update($request->all());
-
         $user->roles()->sync($request->get('roles'));
         return redirect()->route('users.edit', $user->id)
             ->with('success', 'Usuario guardado con éxito');

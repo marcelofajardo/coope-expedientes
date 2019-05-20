@@ -21,9 +21,9 @@
 @section('main-content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-9">
             <div class="panel panel-default">
-                <div class="panel-heading" style="height: 55px;">Editando Clasificación de Anexos
+                <div class="panel-heading" style="height: 55px; font-weight: 600; font-size: 16px;">Editando Clasificación de Anexos
                   <p class="pull-right">
                     <a class="btn btn-primary" href="{{ URL::previous() }}">Volver</a>
                   </p>

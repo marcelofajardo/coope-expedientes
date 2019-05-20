@@ -60,12 +60,12 @@ class Expediente extends Model
 
       public function setFechaAttribute($val)
       {
-            $this->attributes['fecha'] = Carbon::parse($val)->format('Y-m-d H:i:s');
+            $this->attributes['fecha'] = \Carbon\Carbon::parse($val)->format('Y-m-d');
       }
 
       public function getFechaAttribute($val)
       {
-          return Carbon::createFromFormat('Y-m-d', $val)->format(config('app.date_format'));
+          return \Carbon\Carbon::parse($val)->format('d-m-Y');
       }
 
       public function user()

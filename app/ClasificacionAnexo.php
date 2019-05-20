@@ -37,24 +37,42 @@ class ClasificacionAnexo extends Model
       }
       public static function boot() {
             parent::boot();
-            static::creating(function ($data) {
+            static::creating(function ($clasificacion) {
+
             });
             static::updating(function($data)
             {
             });
-            static::deleting(function($clasificacion)
+            static::deleted(function($clasificacion)
             {
-                  $control = new Auditoria();
-                  $control->user_id = Auth::user()->id;
-                  $control->username = Auth::user()->name;
-                  $control->accion = 'Borrar';
-                  $control->descripcion = 'Se borro la Clasificación de un Anexo: ' . $clasificacion->nombre . ' !!!';
-                  $control->slug = str_slug(rand(40,1000) . '-' . $clasificacion->nombre);
-                  $control->save();
+                $au = new Auditoria();
+                $au->user_id = Auth::user()->id;
+                $au->username = Auth::user()->name;
+                $au->componente_id = $clasificacion->id;
+                $au->modelo = 'ClasificacionAnexo';
+                $au->accion = 'Se acaba de Borrar una Clasificación de los Anexos';
+                $au->descripcion = 'Se borro la Clasificación de un Anexo: ' . $clasificacion->nombre . ' !!!';
+                $au->save();
             });
-            static::updated(function($data) {
+            static::updated(function($clasificacion) {
+                $au = new Auditoria();
+                $au->user_id = Auth::user()->id;
+                $au->username = Auth::user()->name;
+                $au->componente_id = $clasificacion->id;
+                $au->modelo = 'ClasificacionAnexo';
+                $au->accion = 'Se acaba de ACTUALIZAR una Clasificación de los Anexos';
+                $au->descripcion = 'Se ACTUALIZO la Clasificación de un Anexo: ' . $clasificacion->nombre . ' !!!';
+                $au->save();
             });
-            static::created(function ($data) {
+            static::created(function ($clasificacion) {
+                $au = new Auditoria();
+                $au->user_id = Auth::user()->id;
+                $au->username = Auth::user()->name;
+                $au->componente_id = $clasificacion->id;
+                $au->modelo = 'ClasificacionAnexo';
+                $au->accion = 'Se acaba de CREAR una Clasificación de los Anexos';
+                $au->descripcion = 'Se CREO la Clasificación de un Anexo: ' . $clasificacion->nombre . ' !!!';
+                $au->save();
             });
       }
 }

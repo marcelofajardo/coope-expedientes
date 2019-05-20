@@ -108,8 +108,8 @@ return [
 
     'faker_locale' => 'es_Es',
 
-    'date_format' => 'd-m-Y',
-    'date_format_js' => 'd-m-Y',
+    'date_format' => 'dd-mm-yy',
+    'date_format_js' => 'dd-mm-yy',
 
     /*
     |--------------------------------------------------------------------------
@@ -168,6 +168,7 @@ return [
         Caffeinated\Shinobi\ShinobiServiceProvider::class,
         Askedio\SoftCascade\Providers\GenericServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -179,7 +180,6 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
 
@@ -234,6 +234,7 @@ return [
         'AdminLTE' => Acacha\AdminLTETemplateLaravel\Facades\AdminLTE::class,
         'Shinobi' => Caffeinated\Shinobi\Facades\Shinobi::class,
         'Debugbar' => 'Barryvdh\Debugbar\Facade',
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

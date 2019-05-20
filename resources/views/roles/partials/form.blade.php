@@ -15,6 +15,7 @@
 <div class="form-group">
  	<label>{{ Form::radio('special', 'all-access') }} Acceso total</label>
  	<label>{{ Form::radio('special', 'no-access') }} Ningún acceso</label>
+	<label>{{ Form::radio('special', 'all-access') }} Accesos Seleccionados</label>
 </div>
 <hr>
 <h3>Lista de permisos</h3>
@@ -26,7 +27,7 @@
 			$porciones = explode(".", $permission->name);
 			$porciones[0];
 			if ($porciones[0] == 'Clasificacion'){
-			
+
 			}
 		@endphp
 	    <li>

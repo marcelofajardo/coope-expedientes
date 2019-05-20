@@ -11,13 +11,15 @@
         <div class="col-md-10">
             <div class="panel panel-default" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <div class="panel-heading">
-                    Permisos
+                    <span style="font-weight: 600; font-size: 16px;">Permisos</span>
+                    <!--
                     @can('permission.create')
                     <a href="{{ route('permisos.create') }}"
                     class="btn btn-sm btn-primary pull-right">
                         Crear
                     </a>
                     @endcan
+                    -->
                 </div>
 
                 <div class="panel-body">
@@ -25,7 +27,7 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Slug</th>
+
                                 <th>Descripción</th>
 
                                 <th>&nbsp;</th>
@@ -35,14 +37,15 @@
                             @foreach($permisos as $permiso)
                             <tr>
                                 <td>{{ $permiso->name }}</td>
-                                <td>{{ $permiso->slug }}</td>
+
                                 <td>{{ $permiso->description }}</td>
-                               
+
                                 @can('permisos.show')
                                 <td width="10px">
 
                                 </td>
                                 @endcan
+                                <!--
                                 @can('permission.edit')
                                 <td width="10px">
                                     <a href="{{ route('permisos.edit', $permiso) }}"
@@ -51,6 +54,8 @@
                                     </a>
                                 </td>
                                 @endcan
+                                --->
+                                <!--
                                 @can('permission.destroy')
                                 <td width="10px">
                                     {!! Form::open(['route' => ['permisos.destroy', $permiso],
@@ -61,6 +66,7 @@
                                     {!! Form::close() !!}
                                 </td>
                                 @endcan
+                                -->
                             </tr>
                             @endforeach
                         </tbody>

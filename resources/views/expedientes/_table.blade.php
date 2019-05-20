@@ -1,5 +1,5 @@
 <div class="table-responsive" style="width: 100%; padding-left: 15px">
-<table class="table table-striped table-hover" id="table">
+<table class="table table-responsive mdl-data-table" id="table">
     <thead>
     <tr>
         <th>Fecha</th>
@@ -30,15 +30,28 @@
             <td>
 
                   @if($action == 'index')
-                        <a href="{{ route('expediente.edit', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Editar</a>
+                        @can('expediente.edit')
+                              <a href="{{ route('expediente.edit', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Editar</a>
+                        @endcan
                         <a href="{{ route('expediente.agregarAnexo', $ex) }}" class="btn btn-primary btn-xs pull-rigth">Agregar</a>
-                        <a href="{{ route('expediente.delete', $ex)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Archivar este Expediente?')" class="btn btn-danger">Archivar</a>
+                        @can('expediente.delete')
+                              <a href="{{ route('expediente.delete', $ex)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Archivar este Expediente?')" class="btn btn-danger">Archivar</a>
+                        @endcan
                   @else
-                        <a href="{{ route('expediente.restore', $ex->id)}}" class="btn btn-danger btn-xs pull-rigth" class="btn btn-danger">Activar</a>
+                        @can('expediente.restore')
+                              <a href="{{ route('expediente.restore', $ex->id)}}" class="btn btn-danger btn-xs pull-rigth" class="btn btn-danger">Activar</a>
+                        @endcan
                   @endif
             </td>
         </tr>
     @endforeach
     </tbody>
+    <tfoot>
+     <td></td>
+     <td></td>
+     <td></td>
+     <td></td>
+
+    </tfoot>
 </table>
 </div>

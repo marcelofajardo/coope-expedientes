@@ -9,6 +9,7 @@ use App\Comment;
 use App\ExpedienteUsuarios;
 use App\User;
 use App\Log;
+use Datatables;
 use Mail;
 use App\ClasificacionAnexo;
 use Illuminate\Support\Facades\DB;
@@ -59,23 +60,10 @@ class ExpedienteController extends Controller
 
       }
 
+
       public function index()
       {
-            /*
-            $user = User::findOrFail(1);
-            Mail::send('emails.permisosprueba',['user' => $user], function ($message) {
-                  $message->from('maurotello73@gmail.com', $name = null);
-                  $message->sender('maurotello73@gmail.com', $name = null);
-                  $message->to('maurotello73@gmail.com', $name = null);
-                  $message->subject('Prueba');
-                  $message->getSwiftMessage();
-            });*/
-            /*
-              Mail::send('emails.permisosprueba', ['user' => $user], function ($m) use ($user) {
-                  $m->from('desarrollostello@gmail.com', 'Your Application');
-                  $m->to($user->email, $user->name)->subject('Your Reminder!');
-              });
-              */
+
             $expedientes = Expediente::all();
             Session::put('proviene', 'index');
             return view('expedientes.index', [
@@ -96,23 +84,26 @@ class ExpedienteController extends Controller
 
       public function agregarAnexo(Expediente $expediente)
       {
-        if (!($this->loadPermiso($expediente))){
-          Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
-          return redirect()->route('expediente.index');
-        }
-        $clasificacionAnexo = ClasificacionAnexo::all()->pluck('nombre','id');
-        return view('anexos.create_exp',[
-          'expediente' => $expediente,
-          'clasificacionAnexo' => $clasificacionAnexo,
-        ]);
+            if (!($this->loadPermiso($expediente))){
+                  Session::flash('message-danger', 'Ud no tiene permisos para ver ni editar este expediente.');
+                  return redirect()->route('expediente.index');
+            }
+            $clasificacionAnexo = ClasificacionAnexo::all()->pluck('nombre','id');
+            return view('anexos.create_exp',[
+                  'expediente' => $expediente,
+                  'clasificacionAnexo' => $clasificacionAnexo,
+            ]);
       }
 
       public function create()
       {
             $tipoExpedientes = TipoExpediente::all()->pluck('nombre_and_letra','id');
-            $usuarios = User::get();
-            // $usersNOadministrador = DB::select('SELECT u.id, u.username, u.nombre FROM users u, roles r WHERE u.rol_id = r.id AND r.nombre != :admin', ['admin' => 'administrador']);
-            // TENGO QUE VER DE NO PASARLE LOS ADMINISTRADORES
+            $usuarios = DB::Select ("
+                                    SELECT DISTINCT u.* FROM
+                                    users u
+                                    INNER JOIN role_user ON role_user.`user_id` = u.`id`
+                                    WHERE role_user.`role_id` != 1
+                                    ");
             return view('expedientes.create', [
                   'tipoExpedientes'=> $tipoExpedientes,
                   'usuarios'=>$usuarios,
@@ -121,11 +112,8 @@ class ExpedienteController extends Controller
 
       public function store(ExpedienteRequest $expedienteRequest)
       {
-
             DB::beginTransaction();
             try {
-
-                  //$errorCreacionLog = 0;
                   $data = $expedienteRequest->all();
                   $letra = TipoExpediente::where('id', $data['tipo_expediente_id'])->first();
                   $numero = DB::table('nroExpediente')->max('id');
@@ -135,56 +123,58 @@ class ExpedienteController extends Controller
                   $data['slug'] = str_slug($data['caratula']) . "-" . rand(50,1000);
                   DB::table('nroExpediente')->increment('id');
                   $creado = Expediente::create($data);
-                  /*
-                  if ($enviado)
-                  {
-                        $control = new Log();
-                        $control->user_id = Auth::user()->id;
-                        $control->username = Auth::user()->name;
-                        $control->expediente_id = $creado['id'];
-                        $control->campo = 'MAIL ENVIADO';
-                        $control->descripcion = 'MAIL ENVIDAO';
-                        $control->save();
-                  }else{
 
-
-                        $control = new Log();
-                        $control->user_id = Auth::user()->id;
-                        $control->username = Auth::user()->name;
-                        $control->expediente_id = $creado['id'];
-                        $control->campo = 'MAIL NO ENVIADO';
-                        $control->descripcion = 'MAIL NO ENVIDAO';
-                        $control->save();
-                  }
-                  */
-
-                  $administradores = DB::select('SELECT * FROM role_user ru, users u, roles r WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = :admin', ['admin' => 'Administrador']);
-
-
-                  $email_administradores = DB::select("
-                        SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
-                  ");
                   if (isset($data['usuarios']))
                   {
+                        // Agrego a todos los usuarios tildados como Habilitados para editar el expediente
+                        // Y les envio un mail avisandoles
                         foreach ($data['usuarios'] as $key => $value) {
                               $permisos = new ExpedienteUsuarios();
                               $permisos->expediente_id = $creado['id'];
                               $permisos->user_id = (int)$value;
                               $permisos->slug = str_slug($creado['id'] . '-' . $value . '-' . rand(5,10000));
-                              $permisos->save();
-                              $email_usuario = DB::select("SELECT u.email FROM users u WHERE u.id =" . $permisos->user_id);
-
-                              $this->enviar2($creado, $email_usuario[0]->email);
+                              if($permisos->save())
+                              {
+                                    $usuario = DB::select("SELECT * FROM users u WHERE u.id =" . $value);
+                                    $this->enviar_aviso($creado, $usuario[0]);
+                              }
                         }
                   }
-                  $permisos = new ExpedienteUsuarios();
-                  $permisos->expediente_id = $creado['id'];
-                  $permisos->user_id = Auth::user()->id;
-                  $permisos->slug = str_slug($creado['id'] . '-' . str_slug($creado['caratula']) . '-' . rand(5000,10000));
-                  $permisos->save();
-                  $email_usuario_actual = DB::select("SELECT u.email FROM users u WHERE u.id =" . Auth::user()->id);
-                  //dd($email_usuario_actual[0]->email);
-                  $this->enviar2($creado, $email_usuario_actual[0]->email);
+
+                  // SI NO ES ADMINISTRADOR
+                  // Agrego al usuario logueado, es decir el que acaba de crear el Expediente como usuario habilitado
+                  // para editar el expediente
+                  // Y le envio un mail avisando de esto
+
+                  $rol_logueado = DB::Select ("
+                                    SELECT roles.slug FROM
+                                    users u
+                                    INNER JOIN role_user ON role_user.user_id = u.id
+                                    INNER JOIN roles ON roles.id = role_user.role_id
+                                    WHERE u.id =" .  Auth::user()->id
+                                    );
+                  if(!($rol_logueado[0]->slug == 'admin'))
+                  {
+                        $permisos = new ExpedienteUsuarios();
+                        $permisos->expediente_id = $creado['id'];
+                        $permisos->user_id = Auth::user()->id;
+                        $permisos->slug = str_slug($creado['id'] . '-' . str_slug($creado['caratula']) . '-' . rand(5000,10000));
+                        if($permisos->save())
+                        {
+                              $usuario = DB::select("SELECT * FROM users u WHERE u.id =" . Auth::user()->id);
+                              $this->enviar_aviso($creado, $usuario[0]);
+                        }
+
+                  }
+                  // A LOS ADMINISTRADORES DEL SISTEMA
+                  $email_administradores = DB::select("
+                        SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
+                  ");
+                  if ($email_administradores){
+                        foreach ($email_administradores as $administrador) {
+                              $this->enviar_aviso_admin($creado, $administrador->email);
+                        }
+                  }
                   DB::commit();
             }catch(ValidationException $e)
             {
@@ -208,55 +198,14 @@ class ExpedienteController extends Controller
                   DB::rollback();
                   throw $e;
             }
-
-
-            return redirect()->route('expediente.index')->with('success','Expediente Creado satisfactoriamente');
+            return redirect()->route('expediente.misexpedientes')->with('success','Expediente Creado satisfactoriamente');
       }
       public function show(Expediente $expediente)
       {
             if (!($this->loadPermiso($expediente))){
                   return redirect()->route('expediente.index')->with('warning', 'Ud no tiene permisos para ver ni editar este expediente.');
             }
-            $logs = DB::select("SELECT logs.* FROM logs WHERE expediente_id = $expediente->id ORDER BY created_at desc");
-            //dd($logs['0']);
-            /*
-            $logs = DB::select("SELECT
-                  created_at,
-                  expediente_id,
-                  clasificacion,
-                  username,
-                  descripcion,
-                  user_id,
-                  anexo_providencia,
-                  url,
-                  archivo FROM
-                  ( SELECT
-                  created_at,
-                  expediente_id,
-                  campo AS clasificacion,
-                  username,
-                  campo AS descripcion,
-                  user_id,
-                  'Providencia' AS anexo_providencia,
-                  null AS url,
-                  null AS archivo
-                  FROM logs
-                  UNION SELECT
-                  anexo.created_at,
-                  expediente_id,
-                  clasificacion_anexo.nombre AS clasificacion,
-                  username,
-                  descripcion,
-                  user_id,
-                  anexo_providencia,
-                  url,
-                  file as archivo
-                  FROM anexo
-                  JOIN clasificacion_anexo
-                  ON anexo.clasificacion_id=clasificacion_anexo.id) AS a
-                  WHERE expediente_id = $expediente->id
-                  ORDER BY created_at desc");
-            */
+            $logs = DB::select("SELECT auditorias.* FROM auditorias WHERE expediente_id = $expediente->id ORDER BY created_at desc");
 
             $anexos = DB::select("SELECT
                   a.created_at,
@@ -278,27 +227,8 @@ class ExpedienteController extends Controller
                   GROUP BY a.created_at, a.file, a.descripcion, a.username, a.id, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
             ");
 
-            //dd($logs);
-                  /*
-                    $anexos = DB::select("SELECT
-                      a.created_at,
-                      a.file,
-                      a.descripcion,
-                      a.username,
-                      a.url,
-                      a.fecha_vto,
-                      a.anexo_providencia,
-                      c.nombre AS clasificacion
-                      FROM anexo a, clasificacion_anexo c
-                      WHERE
-                      a.clasificacion_id = c.id
-                      AND a.expediente_id = $expediente->id
-                      ORDER BY a.created_at desc");
-                        */
-                      //$comentarios = $anexos->comments();
             return view('expedientes.show', [
                   'logs'=>$logs,
-                  //'comentarios' => $comentarios,
                   'anexos'=>$anexos,
                   'expediente'=>$expediente,
             ]);
@@ -308,24 +238,35 @@ class ExpedienteController extends Controller
       {
             if ($expediente->archivado == 0)
             {
-                $habilitados = DB::select("
+                  $habilitados = DB::select("
                         SELECT
+                        eu.user_id AS id,
+                        eu.expediente_id,
+                        users.`email`,
+                        users.`name` AS usuario
+                        FROM
+                        expediente_usuarios eu
+                        INNER JOIN users ON users.`id` = eu.`user_id`
+                        WHERE
+                        eu.expediente_id = $expediente->id
+                        ");
+                  //dd($habilitados);
+                  //
+                  $no_habilitados = DB::select("
+                        SELECT DISTINCT
                         u.id,
+                        u.email,
                         u.name AS usuario,
-                        u.nombre,
-                        r.name AS rol
+                        u.nombre
                         FROM
                         users u,
-                        roles r,
                         role_user
                         WHERE
                         u.id = role_user.user_id
                         AND
-                        role_user.role_id = r.id
-                        AND
-                        r.name != 'Administrador'
-                        AND EXISTS (
-                              SELECT
+                        role_user.`role_id` != 1
+                        AND NOT EXISTS (
+                              SELECT DISTINCT
                               eu.user_id,
                               role_user.user_id,
                               eu.expediente_id
@@ -336,10 +277,12 @@ class ExpedienteController extends Controller
                               AND
                               eu.expediente_id = $expediente->id
                               )
-                        ");
-                $no_habilitados = DB::select("
+                  ");
+                  /*
+                  $no_habilitados = DB::select("
                         SELECT
                         u.id,
+                        u.email,
                         u.name AS usuario,
                         u.nombre,
                         r.name AS rol
@@ -366,46 +309,14 @@ class ExpedienteController extends Controller
                               eu.expediente_id = $expediente->id
                               )
                         ");
-                  $logs = DB::select("SELECT logs.* FROM logs WHERE expediente_id = $expediente->id ORDER BY created_at desc");
-
-                  /*
-                $logs = DB::select("SELECT
-                created_at,
-                expediente_id,
-                clasificacion,
-                username,
-                descripcion,
-                user_id,
-                anexo_providencia,
-                url,
-                archivo FROM
-                ( SELECT
-                  created_at,
-                  expediente_id,
-                  campo AS clasificacion,
-                  username,
-                  campo AS descripcion,
-                  user_id,
-                 'Providencia' AS anexo_providencia,
-                  null AS url,
-                  null AS archivo
-                  FROM logs
-                  UNION SELECT
-                  anexo.created_at,
-                  expediente_id,
-                  clasificacion_anexo.nombre AS clasificacion,
-                  username,
-                  descripcion,
-                  user_id,
-                  anexo_providencia,
-                  url,
-                  file as archivo
-                  FROM anexo
-                  JOIN clasificacion_anexo
-                  ON anexo.clasificacion_id=clasificacion_anexo.id) AS a
-                  WHERE expediente_id = $expediente->id
-                  ORDER BY created_at desc");
                   */
+                  $logs = DB::select("SELECT
+                        logs.*
+                        FROM logs
+                        WHERE
+                        expediente_id = $expediente->id
+                        ORDER BY created_at desc");
+
                   $anexos = DB::select("SELECT
                        a.created_at,
                        a.file,
@@ -425,14 +336,7 @@ class ExpedienteController extends Controller
                        WHERE a.expediente_id = $expediente->id
                        GROUP BY a.created_at, a.file, a.descripcion, a.username, a.id, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
                   ");
-                  /*
-                  $logs = DB::table('logs')
-                      ->where('expediente_id', '=', $expediente->id)
-                      ->get();
-                      $anexos = Anexo::join('clasificacion_anexo AS c', 'clasificacion_id', '=', 'c.id')
-                                    ->where('expediente_id', '=', $expediente->id)
-                                    ->get();
-                */
+
                     $tipoExpedientes = TipoExpediente::all()->pluck('nombre', 'id');
                     return view('expedientes.edit', [
                       'expediente' => $expediente,
@@ -442,8 +346,6 @@ class ExpedienteController extends Controller
                       'habilitados' => $habilitados,
                       'no_habilitados'=>$no_habilitados
                     ]);
-                  //  return view('roles.edit', compact('rol'));
-
             }
       }
 
@@ -455,6 +357,7 @@ class ExpedienteController extends Controller
             DB::beginTransaction();
             try
             {
+                  /*
                   $administradores = DB::Select ("
                         SELECT
                         u.id AS usuario,
@@ -469,40 +372,89 @@ class ExpedienteController extends Controller
                         r.name = 'Administrador'
                         ");
 
-                        //$usuarioAdministrador = $administradores[0]->usuario;
                   foreach ($administradores as $admin) {
                         $idAdmin[] = $admin->usuario;
                   }
+                  */
+                  // Lo que hice fue capturar tosos los ID de los usuarios Administradores
                   $data = $expedienteRequest->all();
                   $expediente->fill($data)->update();
 
-                  $permisosBorrados = DB::table('expediente_usuarios')->where([
+                  $permisosActuales = DB::table('expediente_usuarios')->where([
                                     ['expediente_id', '=', $expediente->id],
-                  ])->get();
+                  ])->delete();
 
-                  foreach ($permisosBorrados as $borrar) {
-                        if (!(in_array($borrar->user_id, $idAdmin)))
+                  /*
+                  if ($permisosActuales)
+                  {
+
+                        foreach ($permisosActuales as $borrar)
                         {
-                            DB::delete('delete from expediente_usuarios where user_id = ?',[$borrar->user_id]);
+                              //if (!(in_array($borrar->user_id, $idAdmin)))
+                              //{
+
+                              $borrado = DB::delete('delete from expediente_usuarios where user_id = ?',[$borrar->user_id]);
+                              if($borrado)
+                              {
+                                    $email = DB::select("SELECT email FROM users u WHERE u.id = ?", [$borrar->user_id] );
+                                    dd($email[0]->email);
+                                    $this->enviar3($expediente);
+                              }
+
+                              //}
                         }
+
                   }
-                  if ($permisosBorrados){
-                        if (isset($data['usuarios']))
-                        {
-                              foreach ($data['usuarios'] as $key => $value) {
-                                    $permisos = new ExpedienteUsuarios();
-                                    $permisos->expediente_id = $expediente->id;
-                                    $permisos->user_id = (int) $value;
-                                    $permisos->slug = str_slug($value . $expediente->id . rand(5,1000));
-                                    $permisos->save();
+                  */
+
+                  // Luego agrego los nuevos usuarios marcados para que puedan editar el expediente
+                  if (isset($data['usuarios']))
+                  {
+                        foreach ($data['usuarios'] as $key => $value) {
+                              $permisos = new ExpedienteUsuarios();
+                              $permisos->expediente_id = $expediente->id;
+                              $permisos->user_id = (int) $value;
+                              $permisos->slug = str_slug($value . $expediente->id . rand(5,1000));
+                              if($permisos->save())
+                              {
+                                    $usuario = DB::Select("SELECT * FROM users WHERE id = $value");
+                                    $this->enviar_aviso($expediente, $usuario[0]);
                               }
                         }
                   }
+                  /*
+                  $email_administradores = DB::select("
+                        SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
+                  ");
+                  if ($email_administradores)
+                  {
+                        foreach ($email_administradores as $administrador) {
+                              $this->enviar_aviso_admin($expediente, $administrador->email);
+                        }
+                  }
+                  */
+
             } catch(ValidationException $e)
             {
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $data['id'];
+                $control->campo = 'Actualización';
+                $control->descripcion = 'Error al intentar actualizar el Expediente: ' . $data['numero'];
+                $control->save();
                   DB::rollback();
                   return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar Actualizar el expediente.');
             }catch (\Exception $e) {
+                  /*
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $data['id'];
+                $control->campo = 'Actualización';
+                $control->descripcion = 'Error al intentar actualizar el Expediente: ' . $data['numero'];
+                $control->save();
+                */
                   DB::rollback();
                   throw $e;
             }
@@ -510,6 +462,63 @@ class ExpedienteController extends Controller
             return redirect()->route('expediente.index')->with('success', 'Expediente actualizado satisfactoriamente');
       }
 
+      public function avisar($expediente, $accion)
+      {
+            $funcion = '';
+            if($accion == 'restore')
+            {
+                  $funcion = 'e_restore';
+            }
+
+            $habilitados = DB::select("
+            SELECT
+            u.id,
+            u.email,
+            u.name AS usuario,
+            u.nombre,
+            r.name AS rol
+            FROM
+            users u,
+            roles r,
+            role_user
+            WHERE
+            u.id = role_user.user_id
+            AND
+            role_user.role_id = r.id
+            AND
+            r.name != 'Administrador'
+            AND EXISTS (
+                  SELECT
+                  eu.user_id,
+                  role_user.user_id,
+                  eu.expediente_id
+                  FROM
+                  expediente_usuarios eu
+                  WHERE
+                  role_user.user_id = eu.user_id
+                  AND
+                  eu.expediente_id = $expediente->id
+                  )
+            ");
+            if($habilitados)
+            {
+                  foreach ($habilitados as $habilitado) {
+                        $this->$funcion($expediente, $habilitado->email);
+                  }
+            }
+
+            //$email_usuario_actual = DB::select("SELECT u.email FROM users u WHERE u.id =" . Auth::user()->id);
+            //$this->enviar2($new_anexo, $email_usuario_actual[0]->email);
+            $email_administradores = DB::select("
+                  SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
+            ");
+            if ($email_administradores)
+            {
+                  foreach ($email_administradores as $administrador) {
+                        $this->$funcion($expediente, $administrador->email);
+                  }
+            }
+      }
             /*
                   Restaura un expediente que estaba en borrado logico
              */
@@ -519,12 +528,29 @@ class ExpedienteController extends Controller
             try
             {
                   $expediente = Expediente::withTrashed()->where('id', '=', $id)->first();
-                  $expediente->restore();
+                  if($expediente->restore())
+                  {
+                        $this->avisar($expediente, 'restore');
+                  }
             }catch(ValidationException $e)
             {
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Restore';
+                $control->descripcion = 'Error al intentar restaurar el Expediente: ' . $expediente->numero;
+                $control->save();
                   DB::rollback();
                   return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar Restaurar el expediente.');
             }catch (\Exception $e) {
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Restore';
+                $control->descripcion = 'Error al intentar restaurar el Expediente: ' . $expediente->numero;
+                $control->save();
                   DB::rollback();
                   throw $e;
             }
@@ -536,7 +562,7 @@ class ExpedienteController extends Controller
       /*
             El destroy es el borrado logico es el SoftDelete
        */
-      public function destroy(Expediente $expediente)
+      public function delete(Expediente $expediente)
       {
             // Cuando ACtivo  o Archivo Expediente tengo que comunicarlo por mail a todos los que tenian acceso
             if (!($this->loadPermiso($expediente))){
@@ -549,6 +575,13 @@ class ExpedienteController extends Controller
                   $expediente->delete();
             }catch(ValidationException $e)
             {
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Delete';
+                $control->descripcion = 'Error al intentar Borrar el Expediente: ' . $expediente->numero;
+                $control->save();
                   DB::rollback();
                   return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar Archivar el expediente.');
             }catch (\Exception $e) {
@@ -576,6 +609,13 @@ class ExpedienteController extends Controller
                   $expediente->forceDelete();
             }catch(ValidationException $e)
             {
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Borrar Definitivamente';
+                $control->descripcion = 'Error al intentar Borrar Definitivamente el Expediente: ' . $expediente->numero;
+                $control->save();
                   DB::rollback();
                   return redirect()->route('expediente.index')->with('error','Ha ocurrido un problema al intentar Archivar el expediente.');
             }catch (\Exception $e) {
@@ -587,23 +627,41 @@ class ExpedienteController extends Controller
             return redirect()->route('expediente.index')->with('success', 'Expediente BORRADO satisfactoriamente.');
       }
 
-      private function enviar($expediente, $administradores)
+      private function enviar_aviso_admin($expediente, $email)
       {
-      foreach ($administradores as $admin) {
-            $email = $admin->email;
-            \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
-                $message->from('expedientes@desarrollostello.com', 'Expedientes');
-                $message->to($email)->subject('Sistema Expedientes - Permisos');
+            \Mail::Send('emails.enviar_aviso_admin',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($email)->subject('Sistema Expedientes - Nuevo Expediente');
             });
       }
+
+      private function enviar_aviso($expediente, $usuario)
+      {
+            \Mail::Send('emails.permisosusuarios',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente, 'usuario'=>$usuario],function($message) use ($usuario){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($usuario->email)->subject('Sistema Expedientes - Nuevo Permiso');
+            });
       }
 
       private function enviar2($expediente, $email)
       {
-
-        \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
-            $message->from('expedientes@desarrollostello.com', 'Expedientes');
-            $message->to($email)->subject('Sistema Expedientes - Nuevo Permiso');
-        });
+            \Mail::Send('emails.permisos',['nombre'=>'Asignación de Permiso', 'expediente'=>$expediente],function($message) use ($email){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($email)->subject('Sistema Expedientes - Nuevo Permiso');
+            });
+      }
+      private function enviar3($expediente, $email)
+      {
+            \Mail::Send('emails.quitarpermiso',['nombre'=>'Quita de Permiso', 'expediente'=>$expediente],function($message) use ($email){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($email)->subject('Sistema Expedientes - Quita de Permiso');
+            });
+      }
+      private function e_restore($expediente, $email)
+      {
+            \Mail::Send('emails.e-restore',['nombre'=>'Expediente Restaurado', 'expediente'=>$expediente],function($message) use ($email){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($email)->subject('Sistema Expedientes - Restaurar');
+            });
       }
 }

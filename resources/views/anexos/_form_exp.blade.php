@@ -18,7 +18,7 @@
       </div>
       <div class="form-group col-md-6 col-sm-12">
             {!! Form::label('fecha_vto', 'Fecha Vencimiento') !!}
-            {!! Form::text('fecha_vto', null, ['class' => 'form-control fechas']) !!}
+            {!! Form::text('fecha_vto', null, ['class' => 'form-control fecha']) !!}
       </div>
 
 </div>

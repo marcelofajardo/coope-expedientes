@@ -25,7 +25,13 @@ class AnexoController extends Controller
                   WHERE
                   users.`id` = $user AND roles.name = 'Administrador'");
 
-            return ($rol['0']->id >= 1) ? true : false;
+            if($rol)
+            {
+                return true;
+            }else {
+                return false;
+            }
+            //return ($rol['0']->id >= 1) ? true : false;
       }
 
       public function index()
@@ -43,6 +49,7 @@ class AnexoController extends Controller
                               })
                               ->get();
             }
+            Session::put('proviene', 'index');
             return view('anexos.index', ['anexos' => $anexos, 'action'=>'index']);
       }
 
@@ -51,6 +58,7 @@ class AnexoController extends Controller
       {
             $clasificacionAnexo = ClasificacionAnexo::all()->pluck('nombre', 'id');
             $expedientes = Expediente::all()->pluck('caratula', 'id');
+            Session::put('proviene', 'index');
             return view('anexos.create', [
             'clasificacionAnexo'=> $clasificacionAnexo,
             'expedientes' => $expedientes,
@@ -61,6 +69,7 @@ class AnexoController extends Controller
       {
             $clasificacionAnexo = ClasificacionAnexo::all()->pluck('nombre', 'id');
             $expedientes = Expediente::where('id', $expediente->id)->pluck('caratula', 'id');
+            Session::put('proviene', 'expediente');
             return view('anexos.create_exp', [
             'clasificacionAnexo'=> $clasificacionAnexo,
             'expedientes' => $expedientes,
@@ -71,7 +80,13 @@ class AnexoController extends Controller
      public function store(AnexoRequest $request)
      {
             $proviene = Session::get('proviene');
-            $rou = 'expediente.' . $proviene;
+            if ($proviene = 'expediente')
+            {
+                  $rou = 'back';
+            }else{
+                  $rou = 'anexo.' . $proviene;
+            }
+
             $data = $request->all();
             $creada = false;
             if($data['anexo_providencia'] == 'Anexo')
@@ -94,6 +109,7 @@ class AnexoController extends Controller
                               $new_anexo = new Anexo();
                               $new_anexo->user_id = Auth::user()->id;
                               $new_anexo->expediente_id = $data['expediente_id'];
+                              $id_expediente = $data['expediente_id'];
                               $new_anexo->clasificacion_id =$data['clasificacion_id'];
                               $new_anexo->username = Auth::user()->name;
                               $new_anexo->descripcion = $data['descripcion'];
@@ -108,27 +124,58 @@ class AnexoController extends Controller
                               $archivo_no_permitido = 1;
                         }
                   }
-
+                  //dd($creada);
                   if ($creada)
                   {
-                        //$this->enviar($new_anexo);
+                        $this->avisar($id_expediente, $new_anexo);
+
                         if ($archivo_no_permitido == 1){
-                              return redirect()->route($rou)->with('warning','Uno o varios archivos adjuntos no están permitidos');
+                              if ($rou == 'back')
+                              {
+                                    return Redirect()->back()->with(['warning' => 'Uno o varios archivos adjuntos no están permitidos']);
+                              }else{
+                                    return redirect()->route($rou)->with('warning','Uno o varios archivos adjuntos no están permitidos');
+                              }
+
                         }else{
-                              //return Redirect()->back()->with(['success' => 'Anexo guardado satisfactoriamente']);
-                              return redirect()->route($rou)->with('success','Anexo guardado satisfactoriamente.');
+                              if ($rou == 'back')
+                              {
+                                    return Redirect()->back()->with(['success' => 'Anexo guardado satisfactoriamente']);
+                              }else{
+                                    return redirect()->route($rou)->with('success','Anexo guardado satisfactoriamente.');
+                              }
                         }
                   }else{
                         if ($archivo_no_permitido == 1){
-                              return redirect()->route($rou)->with('error','Ocurrio un Error! Además uno o varios archivos adjuntos no están permitidos');
+                              if ($rou == 'back')
+                              {
+                                    return Redirect()->back()->with(['error' => 'Ocurrio un Error! Además uno o varios archivos adjuntos no están permitidos']);
+                              }else{
+                                    return redirect()->route($rou)->with('error','Ocurrio un Error! Además uno o varios archivos adjuntos no están permitidos');
+                              }
+
+
                         }else{
-                              return redirect()->route($rou)->with('error','Ocurrió un error al guardar.');
+                              if ($rou == 'back')
+                              {
+                                  $control = new Log();
+                                  $control->user_id = Auth::user()->id;
+                                  $control->username = Auth::user()->name;
+                                  $control->expediente_id = $id;
+                                  $control->campo = 'Nuevo Anexo';
+                                  $control->descripcion = 'Error al intentar Guardar un nuevo Anexo';
+                                  $control->save();
+                                    return Redirect()->back()->with(['error' => 'Ocurrió un error al guardar']);
+                              }else{
+                                    return redirect()->route($rou)->with('error','Ocurrió un error al guardar.');
+                              }
                         }
                   }
             }else{
                   $new_anexo = new Anexo();
                   $new_anexo->user_id = Auth::user()->id;
                   $new_anexo->expediente_id = $data['expediente_id'];
+                  $id_expediente = $data['expediente_id'];
                   $new_anexo->username = Auth::user()->name;
                   $new_anexo->descripcion = $data['descripcion'];
                   $new_anexo->clasificacion_id =$data['clasificacion_id'];
@@ -140,9 +187,80 @@ class AnexoController extends Controller
 
                   if ($creada)
                   {
-                        return redirect()->route($rou)->with('success','Providencia guardada satisfactoriamente.');
+                        $this->avisar($id_expediente, $new_anexo);
+                        if ($rou == 'back')
+                        {
+                             return Redirect()->back()->with(['success' => 'Providencia guardada satisfactoriamente']);
+                        }else{
+                             return redirect()->route($rou)->with('success','Providencia guardada satisfactoriamente.');
+                        }
                   }else{
-                        return redirect()->route($rou)->with('error','Ocurrió un error al guardar.');
+                        if ($rou == 'back')
+                        {
+                            $control = new Log();
+                            $control->user_id = Auth::user()->id;
+                            $control->username = Auth::user()->name;
+                            $control->expediente_id = $id;
+                            $control->campo = 'Nuevo Anexo';
+                            $control->descripcion = 'Error al intentar Guardar un nuevo Anexo';
+                            $control->save();
+                             return Redirect()->back()->with(['error' => 'Ocurrió un error al guardar']);
+                        }else{
+                             return redirect()->route($rou)->with('error','Ocurrió un error al guardar.');
+                        }
+                  }
+            }
+      }
+
+
+      public function avisar($id_expediente, $new_anexo)
+      {
+            $habilitados = DB::select("
+            SELECT
+            u.id,
+            u.email,
+            u.name AS usuario,
+            u.nombre,
+            r.name AS rol
+            FROM
+            users u,
+            roles r,
+            role_user
+            WHERE
+            u.id = role_user.user_id
+            AND
+            role_user.role_id = r.id
+            AND
+            r.name != 'Administrador'
+            AND EXISTS (
+                  SELECT
+                  eu.user_id,
+                  role_user.user_id,
+                  eu.expediente_id
+                  FROM
+                  expediente_usuarios eu
+                  WHERE
+                  role_user.user_id = eu.user_id
+                  AND
+                  eu.expediente_id = $id_expediente
+                  )
+            ");
+            if($habilitados)
+            {
+                  foreach ($habilitados as $habilitado) {
+                        $this->enviar2($new_anexo, $habilitado->email);
+                  }
+            }
+
+            //$email_usuario_actual = DB::select("SELECT u.email FROM users u WHERE u.id =" . Auth::user()->id);
+            //$this->enviar2($new_anexo, $email_usuario_actual[0]->email);
+            $email_administradores = DB::select("
+                  SELECT u.email FROM users u, roles r, role_user ru WHERE ru.role_id = r.id AND ru.`user_id` = u.`id` AND  r.name = 'Administrador'
+            ");
+            if ($email_administradores)
+            {
+                  foreach ($email_administradores as $administrador) {
+                        $this->enviar2($new_anexo, $administrador->email);
                   }
             }
       }
@@ -198,6 +316,13 @@ class AnexoController extends Controller
       {
             return redirect()->route('anexo.index')->with('success','Anexo actualizado satisfactoriamente.');
       }else{
+          $control = new Log();
+          $control->user_id = Auth::user()->id;
+          $control->username = Auth::user()->name;
+          $control->expediente_id = $id;
+          $control->campo = 'Actualizar Anexo';
+          $control->descripcion = 'Error al intentar Actualizar un nuevo Anexo';
+          $control->save();
             return redirect()->route('anexo.index')->with('error','Ocurrió un error al intentar actualizar el Anexo.');
       }
     }
@@ -215,6 +340,13 @@ class AnexoController extends Controller
             {
                   return redirect()->route('anexo.index')->with('success','Anexos restaurado satisfactoriamente.');
             }else{
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Restaurar Anexo';
+                $control->descripcion = 'Error al intentar Restaurar un Anexo';
+                $control->save();
                   return redirect()->route('anexo.index')->with('error','Ocurrió un error al intentar Restaurar el Anexo.');
             }
 
@@ -265,11 +397,18 @@ class AnexoController extends Controller
                         }
                        Session::flash('message-success', 'Anexo borrado correctamente !!!');
                   }else{
+                      $control = new Log();
+                      $control->user_id = Auth::user()->id;
+                      $control->username = Auth::user()->name;
+                      $control->expediente_id = $id;
+                      $control->campo = 'Borrar Anexo';
+                      $control->descripcion = 'Error al intentar Borrar un Anexo';
+                      $control->save();
                         Session::flash('message-danger', 'Error al intentar eliminar el Anexo');
                   }
                   return redirect()->route('anexo.index');
             }else{
-                Session::flash('message-danger', 'Este anexo no está habilitado para ser borrado.');
+                Session::flash('message-danger', 'No está habilitado para borrar este Anexo.');
             }
             return redirect()->route('anexo.index');
       }
@@ -287,8 +426,23 @@ class AnexoController extends Controller
             }
             return back()->withSuccess('Archivo Borrado Correctamente!');
             }else{
+                $control = new Log();
+                $control->user_id = Auth::user()->id;
+                $control->username = Auth::user()->name;
+                $control->expediente_id = $id;
+                $control->campo = 'Borrar Archivo de un Anexo';
+                $control->descripcion = 'Error al intentar Borrar el archivo de un Anexo';
+                $control->save();
             Session::flash('message-danger', 'Error al intentar eliminar el Anexo');
             }
+      }
+
+      private function enviar2($anexo, $email)
+      {
+            \Mail::Send('emails.mailanexo',['nombre'=>'Nuevo Anexo', 'anexo'=>$anexo],function($message) use ($email){
+                  $message->from('expedientes@desarrollostello.com', 'Expedientes');
+                  $message->to($email)->subject('Sistema Expedientes - Nuevo Anexo');
+            });
       }
     /*
     public function destroy2()

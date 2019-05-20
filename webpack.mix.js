@@ -30,6 +30,17 @@ const mix = require('laravel-mix');
    .copy('resources/assets/css/expedientes.css','public/css/expedientes.css')
    .copy('resources/assets/css/login.css','public/css/login.css')
    .copy('resources/assets/img/*.*','public/img/')
+   .copy('resources/assets/css/buttons.bootstrap.min.css', 'public/css/buttons.bootstrap.min.css')
+   .copy('resources/assets/css/buttons.dataTables.min.css', 'public/css/buttons.dataTables.min.css')
+   .copy('resources/assets/js/jquery.dataTables.min.js', 'public/js/jquery.dataTables.min.js')
+   .copy('resources/assets/js/dataTables.buttons.min.js', 'public/js/dataTables.buttons.min.js')
+   .copy('resources/assets/js/buttons.print.js', 'public/js/buttons.print.js')
+   .copy('resources/assets/js/buttons.flash.min.js', 'public/js/buttons.flash.min.js')
+   .copy('resources/assets/js/jszip.min.js', 'public/js/jszip.min.js')
+   .copy('resources/assets/js/pdfmake.min.js', 'public/js/pdfmake.min.js')
+   .copy('resources/assets/js/vfs_fonts.js', 'public/js/vfs_fonts.js')
+   .copy('resources/assets/js/buttons.html5.min.js', 'public/js/buttons.html5.min.js')
+
    //VENDOR RESOURCES
    .copy('node_modules/font-awesome/fonts/*.*','public/fonts/')
    .copy('node_modules/ionicons/dist/fonts/*.*','public/fonts/')

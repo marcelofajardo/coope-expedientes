@@ -17,10 +17,14 @@
             <td> {{ $te->telefono }} </td>
             <td>
                 @if($action == 'index')
-                    <a href="{{ route('profile.edit', $te) }}" class="btn btn-warning btn-xs">Editar</a>
-                    <a href="{{ route('profile.delete', $te)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
+                      @can('profile.edit')
+                           <a href="{{ route('profile.edit', $te) }}" class="btn btn-warning btn-xs">Editar</a>
+                     @endcan
+                     @can('profile.delete')
+                          <a href="{{ route('profile.delete', $te)}}" class="btn btn-danger btn-xs pull-rigth" onclick="return confirm('Está seguro que desea eliminar este ítem?')"
+                    @endcan
     class="btn btn-danger">Eliminar</a>
-              
+
                 @endif
             </td>
         </tr>

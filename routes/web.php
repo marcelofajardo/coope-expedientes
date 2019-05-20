@@ -79,11 +79,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('listado', 'LogController@index')->name('log.index')->middleware('permission:log.index');
         Route::get('nueva', 'LogController@create')->name('log.create')->middleware('permission:log.create');
         Route::post('nueva', 'LogController@store')->name('log.store')->middleware('permission:log.store');
-        Route::get('editar/{log}', 'LogController@edit')->name('log.edit')->middleware('permission:log.edit');
         Route::get('ver/{log}', 'LogController@show')->name('log.show')->middleware('permission:log.show');
-        Route::patch('editar/{log}', 'LogController@update')->name('log.update')->middleware('permission:log.update');
-        Route::get('eliminar/{log}', 'LogController@destroy')->name('log.delete')->middleware('permission:log.delete');
     });
+
+
+    Route::group(['prefix' => 'auditoria'], function () {
+
+        Route::get('listado', 'AuditoriaController@index')->name('auditoria.index')->middleware('permission:auditoria.index');
+        Route::get('nueva', 'AuditoriaController@create')->name('auditoria.create')->middleware('permission:auditoria.create');
+        Route::post('nueva', 'AuditoriaController@store')->name('auditoria.store')->middleware('permission:auditoria.store');
+        Route::get('ver/{auditoria}', 'AuditoriaController@show')->name('auditoria.show')->middleware('permission:auditoria.show');
+    });
+
+
 
     Route::group(['prefix' => 'anexo'], function () {
         Route::get('create_exp{expediente}', 'AnexoController@create_exp')->name('anexo.create_exp')->middleware('permission:anexo.create_exp');
@@ -96,9 +104,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('eliminar/{anexo}', 'AnexoController@destroy')->name('anexo.delete')->middleware('permission:anexo.delete');
         Route::get('eliminarAjax/{id}', 'AnexoController@destroyAjax')->name('anexo.deleteAjax')->middleware('permission:anexo.deleteAjax');
         Route::get('show1/{id}', 'AnexoController@show1')->name('anexo.show1');
-        Route::post('borrar/{expediente}', 'ExpedienteController@borrar')           ->name('expediente.borrar')               ->middleware('permission:expediente.borrar');
-        Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore');
-        Route::get('eliminated', 'ExpedienteController@eliminated')                 ->name('expediente.eliminated')           ->middleware('permission:expediente.eliminated');
+
 
     });
 
@@ -117,9 +123,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('editar/{expediente}', 'ExpedienteController@edit')              ->name('expediente.edit')                 ->middleware('permission:expediente.edit');
         Route::patch('editar/{expediente}', 'ExpedienteController@update')          ->name('expediente.update')               ->middleware('permission:expediente.update');
         Route::get('ver/{expediente}', 'ExpedienteController@show')                 ->name('expediente.show')                 ->middleware('permission:expediente.show');
-        Route::get('eliminar/{expediente}', 'ExpedienteController@destroy')         ->name('expediente.delete')               ->middleware('permission:expediente.delete');
+        Route::get('eliminar/{expediente}', 'ExpedienteController@delete')         ->name('expediente.delete')                ->middleware('permission:expediente.delete');
         Route::post('borrar/{expediente}', 'ExpedienteController@borrar')           ->name('expediente.borrar')               ->middleware('permission:expediente.borrar');
-        Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore');
+        Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore')              ->middleware('permission:expediente.restore');;
         Route::get('eliminated', 'ExpedienteController@eliminated')                 ->name('expediente.eliminated')           ->middleware('permission:expediente.eliminated');
 
 
@@ -169,6 +175,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('nueva', 'ProfileController@store')->name('profile.store')->middleware('permission:profile.store');
             Route::get('editar/{profile}', 'ProfileController@edit')->name('profile.edit');
             Route::get('ver/{profile}', 'ProfileController@show')->name('profile.show')->middleware('permission:profile.show');
+            Route::get('verAdmin/{profile}', 'ProfileController@showAdmin')->name('profile.showAdmin')->middleware('permission:profile.showAdmin');
             Route::patch('editar/{profile}', 'ProfileController@update')->name('profile.update')->middleware('permission:profile.update');
             Route::get('eliminar/{profile}', 'ProfileController@destroy')->name('profile.delete')->middleware('permission:profile.delete');
             Route::get('changepassword', 'ProfileController@changepassword')->name('profile.changepassword');

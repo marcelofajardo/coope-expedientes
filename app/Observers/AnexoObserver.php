@@ -18,14 +18,14 @@ class AnexoObserver
      */
       public function created(Anexo $anexo)
       {
-            
+
             $au = new Auditoria();
             $au->user_id = Auth::user()->id;
             $au->username = Auth::user()->name;
             $au->componente_id = $anexo->id;
             $au->modelo = 'anexo';
             $au->accion = 'Nuevo Anexo';
-            $au->descripcion = 'Se acaba de CREAR un Anexo al Expediente ' . $anexo->expediente->numero;
+            $au->descripcion = 'Se acaba de CREAR un Anexo al Expediente:  ' . $anexo->expediente->numero  . ' | Fecha: ' . $anexo->created_at->format('d-m-Y') . ' | Descripción del Anexo: ' . $anexo->descripcion;
             $au->save();
       }
 
@@ -43,7 +43,7 @@ class AnexoObserver
             $au->componente_id = $anexo->id;
             $au->modelo = 'anexo';
             $au->accion = 'Actualizaciòn Anexo';
-            $au->descripcion = 'Se acaba de ACTUALIZAR un Anexo al Expediente ' . $anexo->expediente->numero;
+            $au->descripcion = 'Se acaba de ACTUALIZAR un Anexo al Expediente ' . $anexo->expediente->numero . ' | Fecha: ' . $anexo->created_at->format('d-m-Y') . ' | Descripción del Anexo: '. $anexo->descripcion;
             $au->save();
       }
 
@@ -61,7 +61,7 @@ class AnexoObserver
             $au->componente_id = $anexo->id;
             $au->modelo = 'anexo';
             $au->accion = 'Borrar Anexo';
-            $au->descripcion = 'Se acaba de BORRAR un Anexo del Expediente ' . $anexo->expediente->numero;
+            $au->descripcion = 'Se acaba de BORRAR un Anexo del Expediente ' . $anexo->expediente->numero . ' | Fecha: ' . $anexo->created_at->format('d-m-Y') . ' | Descripción del Anexo: '. $anexo->descripcion;
             $au->save();
       }
 
@@ -79,7 +79,7 @@ class AnexoObserver
             $au->componente_id = $anexo->id;
             $au->modelo = 'anexo';
             $au->accion = 'Restaurar Anexo';
-            $au->descripcion = 'Se acaba de RESTAURAR un Anexo del Expediente ' . $anexo->expediente->numero;
+            $au->descripcion = 'Se acaba de RESTAURAR un Anexo del Expediente ' . $anexo->expediente->numero . ' | Fecha: ' . $anexo->created_at->format('d-m-Y') . ' | Descripción del Anexo: '. $anexo->descripcion;
             $au->save();
       }
 

@@ -54,23 +54,46 @@
 
 
             <li class="active"><a href="{{ url('home') }}"><i class='fa fa-link'></i> <span>Inicio</span></a></li>
-            <li><a href="{{ route('expediente.index') }}"><i class='fa fa-link'></i> <span>Expedientes</span></a></li>
+            @can('expediente.index')
+                  <li><a href="{{ route('expediente.index') }}"><i class='fa fa-link'></i> <span>Expedientes</span></a></li>
+            @endcan
             <li class="treeview">
-                <a href="#"><i class='fa fa-link'></i> <span>Tablas Anexas</span> <i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ route('tipoexpediente.index') }}">Tipos de Expedientes</a></li>
-                    <li><a href="{{ route('clasificacion.index') }}">Clasificación de Anexos</a></li>
-                    <li><a href="{{ route('anexo.index') }}">Anexos</a></li>
-                    <li><a href="{{ route('notificacion.index') }}">Notificaciones</a></li>
+                  <a href="#"><i class='fa fa-link'></i> <span>Tablas Anexas</span> <i class="fa fa-angle-left pull-right"></i></a>
+                  <ul class="treeview-menu">
+                        @can('tipoexpediente.index')
+                              <li><a href="{{ route('tipoexpediente.index') }}">Tipos de Expedientes</a></li>
+                        @endcan
+                        @can('clasificacion.index')
+                              <li><a href="{{ route('clasificacion.index') }}">Clasificación de Anexos</a></li>
+                        @endcan
+                        @can('anexo.index')
+                              <li><a href="{{ route('anexo.index') }}">Anexos</a></li>
+                        @endcan
+                        @can('notificacion.index')
+                              <li><a href="{{ route('notificacion.index') }}">Notificaciones</a></li>
+                        @endcan
                 </ul>
             </li>
-            @role('admin')
-                  <li><a href="{{ route('users.index') }}"><i class='fa fa-link'></i> <span>Usuarios</span></a></li>
-                  <li><a href="{{ route('permisos.index') }}"><i class='fa fa-link'></i> <span>Permisos</span></a></li>
-                  <li><a href="{{ route('roles.index') }}"><i class='fa fa-link'></i> <span>Roles</span></a></li>
-                  <li><a href="{{ route('profile.index') }}"><i class='fa fa-link'></i> <span>Perfiles</span></a></li>
+                  @can('users.index')
+                        <li><a href="{{ route('users.index') }}"><i class='fa fa-link'></i> <span>Usuarios</span></a></li>
+                  @endcan
+                  @can('permisos.index')
+                        <li><a href="{{ route('permisos.index') }}"><i class='fa fa-link'></i> <span>Permisos</span></a></li>
+                  @endcan
+                  @can('roles.index')
+                        <li><a href="{{ route('roles.index') }}"><i class='fa fa-link'></i> <span>Roles</span></a></li>
+                  @endcan
+                  @can('profile.index')
+                        <li><a href="{{ route('profile.index') }}"><i class='fa fa-link'></i> <span>Perfiles</span></a></li>
+                  @endcan
+                  @can('log.index')
+                        <li><a href="{{ route('log.index') }}"><i class='fa fa-link'></i> <span>Logs del Sistema</span></a></li>
+                  @endcan
+                  @can('auditoria.index')
+                        <li><a href="{{ route('auditoria.index') }}"><i class='fa fa-link'></i> <span>Auditorias del Sistema</span></a></li>
+                  @endcan
                   <!--<li><a href="{{ route('users.create') }}"><i class='fa fa-link'></i><span>Nuevo Usuario</span></a></li>-->
-            @endrole
+
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

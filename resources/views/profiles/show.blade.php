@@ -33,6 +33,9 @@
                            <a href="{{ route('profile.changepassword') }}" class="btn btn-sm btn-primary pull-left">
                              Cambiar Contraseña
                            </a>
+                           @if (Auth::user()->profile)
+                                 <a style="margin-left: 15px;" href="{{ route('profile.edit', Auth::user()->profile) }}" class="pull-left btn btn-warning btn-sm">Editar Perfil</a>
+                           @endif
                            DATOS DEL PERFIL
                            <a href="{{ route('profile.index') }}" class="btn btn-sm btn-primary pull-right">
                              Volver

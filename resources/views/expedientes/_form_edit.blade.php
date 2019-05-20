@@ -1,7 +1,7 @@
 <div class="row">
       <div class="form-group col-md-2 col-sm-12">
           {!! Form::label('fecha', 'Fecha') !!}
-          {!! Form::text('fecha', null, ['class' => 'form-control', 'required']) !!}
+          {!! Form::text('fecha', null, ['class' => 'form-control fecha', 'required']) !!}
       </div>
     <div class="form-group col-md-4 col-sm-12">
        {!! Form::label('nombre', 'Nombre del Expediente') !!}
@@ -66,12 +66,13 @@
 
 <div class="form-group" style="margin-top: 15px;">
 	<ul class="list-unstyled">
+
 		@foreach($habilitados as $usuario)
 	    <li>
 	        <label>
 	        {{ Form::checkbox('usuarios[]', $usuario->id, 1) }}
 	        {{ $usuario->usuario }}
-	        <em>({{ $usuario->nombre }})</em>
+	        <em>({{ $usuario->email }})</em>
 	        </label>
 	    </li>
 	    @endforeach
@@ -82,7 +83,7 @@
 	        <label>
 	        {{ Form::checkbox('usuarios[]', $usuario->id, null) }}
 	        {{ $usuario->usuario }}
-	        <em>({{ $usuario->nombre }})</em>
+	        <em>({{ $usuario->email }})</em>
 	        </label>
 	    </li>
 	    @endforeach

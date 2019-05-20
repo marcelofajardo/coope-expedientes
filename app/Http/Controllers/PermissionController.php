@@ -12,14 +12,14 @@ class PermissionController extends Controller
 
   public function index()
   {
-      $permisos = Permission::paginate();
+      $permisos = Permission::with('Roles')->paginate();
+      //dd($permisos->Roles());
       return view('permisos.index', compact('permisos'));
   }
 
   public function index2()
   {
       $permisos = Permission::paginate();
-
       return view('permisos.index', compact('permisos'));
   }
 
@@ -42,6 +42,7 @@ class PermissionController extends Controller
    */
   public function store(Request $request)
   {
+     // $request['slug'] = $request['name'];
       $permisos = Permission::create($request->all());
       //$role->permissions()->sync($request->get('permissions'));
       if($permisos){

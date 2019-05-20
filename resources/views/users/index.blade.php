@@ -29,7 +29,7 @@
                                             <th>Nombre</th>
                                             <th>Correo</th>
                                             <th>Rol</th>
-                                            <th>Activo?</th>
+                                            <!--<th>Activo?</th>-->
                                             <th colspan="3">&nbsp;</th>
                                         </tr>
                                     </thead>
@@ -46,12 +46,13 @@
                                                       @endforeach
                                                 </h4>
                                           </td>
+                                          <!--
                                           @if ($user->estado == 'Activo')
                                                 <td><h4><a href="{{ route('users.activo', $user)}}" class="btn btn-success btn-xs pull-rigth" onclick="return confirm('Está seguro que desea bloquear este usuario?')" class="btn btn-success">{{ $user->estado }}</a></h4></td>
                                           @else
                                                 <td><h4><a href="{{ route('users.activo', $user)}}" class="btn btn-warning btn-xs pull-rigth" onclick="return confirm('Está seguro que desea Activar este usuario?')" class="btn btn-warning">{{ $user->estado }}</a></h4></td>
                                           @endif
-
+                                          -->
 
                                       @can('users.edit')
                                       <td width="10px">
