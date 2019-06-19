@@ -18,13 +18,7 @@ El presente email se ha generado debido a que se ha cargado un anexo o Providenc
 <p>Anexo ó Providencia: {{ $new_anexo->anexo_providencia }} </p>
 <p>Descripción: {{ $new_anexo->descripcion }} </p>
 <p>Fecha Vto: {{ $new_anexo->fecha_vto }} </p>
-
-
-    @if($new_anexo->file)
-
-    @endif
-
-
+
 
 </body>
 
