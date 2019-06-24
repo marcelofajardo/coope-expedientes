@@ -23,7 +23,7 @@ class AnexoController extends Controller
                   INNER JOIN roles ON ru.`role_id` = roles.`id`
                   INNER JOIN users ON ru.`user_id` = users.`id`
                   WHERE
-                  users.`id` = $user AND roles.name = 'Administrador'");
+                  users.`id` = $user AND roles.name = 'Administrador General'");
 
             if($rol)
             {
@@ -36,9 +36,11 @@ class AnexoController extends Controller
 
       public function index()
       {
+
             if($this->admin())
             {
-                  $anexos = Anexo::all();
+                  //$anexos = Anexo::all();
+                  $anexos = Anexo::with(['expediente'])->get();
             }else{
                   // esto lo hago para que vea solamente los anexos de los expedientes del usuario o de los que tiene permiso
                   // excepto que sea administrador
@@ -100,14 +102,25 @@ class AnexoController extends Controller
                         $filename = $file->getClientOriginalName();
                         $extension = $file->getClientOriginalExtension();
                         $check=in_array($extension,$allowedfileExtension);
-                        $text = (string) str_slug( \Carbon\Carbon::parse($data['fecha_vto'])->format('Y-m-d'));
+                        $text = (string) str_slug( \Carbon\Carbon::parse($data['fecha_vto'])->format('Y-m-d h:m:s'));
                         $filename = $text . '-' . $filename;
+
                         if($check)
                         {
-                              $destinationPath = 'uploads/';
+                              $foja = Anexo::where('expediente_id',$data['expediente_id'])->max('foja');
+                              $nroExp = Expediente::whereId($data['expediente_id'])->select('numero')->first();
+
+                              if ($foja)
+                              {
+                                    $nrofoja = $foja + 1;
+                              }else{
+                                    $nrofoja = 1;
+                              }
+                              $destinationPath = 'uploads/' . $nroExp->numero . '/';
                               $file->move($destinationPath, $filename);
                               $new_anexo = new Anexo();
                               $new_anexo->user_id = Auth::user()->id;
+                              $new_anexo->foja = $nrofoja;
                               $new_anexo->expediente_id = $data['expediente_id'];
                               $id_expediente = $data['expediente_id'];
                               $new_anexo->clasificacion_id =$data['clasificacion_id'];
@@ -116,7 +129,7 @@ class AnexoController extends Controller
                               if ($data['fecha_vto'])
                                     $new_anexo->fecha_vto = \Carbon\Carbon::parse($data['fecha_vto'])->format('Y-m-d');
                               $new_anexo->file = $filename;
-                              $new_anexo->url = 'uploads';
+                              $new_anexo->url = 'uploads/' . $nroExp->numero . '/';
                               $new_anexo->anexo_providencia = $data['anexo_providencia'];
                               $new_anexo->slug = substr(str_slug(Auth::user()->name), 0, 10) . '-'. substr(str_slug($filename), 0, 10) . '-' . rand(50,1000);
                               $creada = $new_anexo->save();
@@ -172,10 +185,18 @@ class AnexoController extends Controller
                         }
                   }
             }else{
+                  $foja = Anexo::where('expediente_id',$data['expediente_id'])->max('foja');
+                  if ($foja)
+                  {
+                        $nrofoja = $foja + 1;
+                  }else{
+                        $nrofoja = 1;
+                  }
                   $new_anexo = new Anexo();
                   $new_anexo->user_id = Auth::user()->id;
                   $new_anexo->expediente_id = $data['expediente_id'];
                   $id_expediente = $data['expediente_id'];
+                  $new_anexo->foja = $nrofoja;
                   $new_anexo->username = Auth::user()->name;
                   $new_anexo->descripcion = $data['descripcion'];
                   $new_anexo->clasificacion_id =$data['clasificacion_id'];

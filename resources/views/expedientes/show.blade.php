@@ -43,17 +43,18 @@
                         <hr />
                         <div id="tabs">
                               <ul>
-                                    <li><a href="#tabs-1">Actuaciones</a></li>
-                                    <li><a href="#tabs-2">Anexos</a></li>
+                                    <li><a href="#tabs-1">Fojas</a></li>
+                                    <li><a href="#tabs-2">Actuaciones</a></li>
                               </ul>
                               <div id="tabs-1">
-                                    @if($logs)
-                                          @include('auditorias._table_auditorias_expedientes')
-                                    @endif
-                              </div>
-                              <div id="tabs-2">
                                     @if($anexos)
                                           @include('anexos._table_expedientes')
+                                    @endif
+                              </div>
+
+                              <div id="tabs-2">
+                                    @if($logs)
+                                          @include('auditorias._table_auditorias_expedientes')
                                     @endif
                               </div>
                         </div>
@@ -61,4 +62,5 @@
             </div>
       </div>
 </div>
+
 @endsection

@@ -16,7 +16,7 @@
                   <tr>
                         <th style="width: 15%; text-align:center; font-weight: 600"> <a title="Visualizar Anexo" href="{{ route('anexo.show', $anexo) }}">{{ $anexo->created_at->format('d-m-Y') }} </a></td>
                         <th style="width: 15%; text-align:center;"> {{ $anexo->anexo_providencia }} </td>
-                        <th style="width: 25%; text-align:center;"> <a href="{{ asset($anexo->url . '/' . $anexo->file) }}" title="Ver Anexo" target="_blank">{{ $anexo->file }}</a></td>
+                        <th style="width: 25%; text-align:center;"> <a href="{{ asset($anexo->url . $anexo->file) }}" title="Ver Anexo" target="_blank">{{ $anexo->file }}</a></td>
 
                         <th style="width: 10%; text-align:center;"> {{ $anexo->username }} </td>
                         @if ($anexo->clasificacion)

@@ -33,6 +33,7 @@ class Expediente extends Model
             'slug',
             'user_id',
             'numero',
+            'foja',
             'nombre',
             'tipo_expediente_id'
       ];

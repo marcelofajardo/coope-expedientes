@@ -127,6 +127,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('borrar/{expediente}', 'ExpedienteController@borrar')           ->name('expediente.borrar')               ->middleware('permission:expediente.borrar');
         Route::get('restore/{id}', 'ExpedienteController@restore')                  ->name('expediente.restore')              ->middleware('permission:expediente.restore');;
         Route::get('eliminated', 'ExpedienteController@eliminated')                 ->name('expediente.eliminated')           ->middleware('permission:expediente.eliminated');
+        Route::get('showPDF', 'ExpedienteController@showPDF')                 ->name('expediente.showPDF');
+
 
 
     });

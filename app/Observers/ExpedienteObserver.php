@@ -24,7 +24,7 @@ class ExpedienteObserver
           $au->expediente_id = $expediente->id;
           $au->modelo = 'expediente';
           $au->accion = 'Se acaba de Crear un Expediente';
-          $au->descripcion = 'Se acaba de Modificar un Expediente. Carátula: ' . $expediente->caratula . ' Bajo el Número '. $expediente->numero;
+          $au->descripcion = 'Se acaba de Crear un Expediente. Carátula: ' . $expediente->caratula . ' Bajo el Número '. $expediente->numero;
           $au->save();
       }
 

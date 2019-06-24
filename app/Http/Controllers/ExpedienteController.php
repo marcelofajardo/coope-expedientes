@@ -8,6 +8,7 @@ use App\Auditoria;
 use App\Comment;
 use App\ExpedienteUsuarios;
 use App\User;
+use Storage;
 use App\Log;
 use Datatables;
 use Mail;
@@ -210,28 +211,46 @@ class ExpedienteController extends Controller
             $anexos = DB::select("SELECT
                   a.created_at,
                   a.file,
+                  e.numero,
                   a.descripcion,
                   a.username,
                   a.url,
                   a.fecha_vto,
                   a.id,
+                  a.foja,
                   a.anexo_providencia,
                   b.nombre AS clasificacion,
                   COUNT(c.id) AS cant_comentarios
                   FROM anexo a
                   INNER JOIN
                   clasificacion_anexo b ON a.clasificacion_id = b.id
+                  INNER JOIN expediente e ON a.expediente_id = e.id
                   LEFT JOIN
                   comments c ON a.id = c.anexo_id
                   WHERE a.expediente_id = $expediente->id
-                  GROUP BY a.created_at, a.file, a.descripcion, a.username, a.id, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
+                  GROUP BY a.created_at, a.file, e.numero, a.descripcion, a.username, a.id, a.foja, a.url, a.fecha_vto,a.anexo_providencia, b.nombre
+                  ORDER BY a.id
             ");
+
+            /*
+            foreach ($anexos as $anexo) {
+                  $pdfContent = Storage::get(asset($anexo->url . $anexo->file));
+            }
+            dd($pdfContent);
+            */
+
 
             return view('expedientes.show', [
                   'logs'=>$logs,
                   'anexos'=>$anexos,
                   'expediente'=>$expediente,
             ]);
+      }
+
+      public function showPDF()
+      {
+            $pdf = PDF::loadView('http://expedientes.desarrollostello.com/uploads/R-0001-2019/2019-06-12-CD10074057.pdf');
+            return $pdf->stream();
       }
 
       public function edit(Expediente $expediente)
